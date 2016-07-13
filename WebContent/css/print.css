@@ -1,0 +1,63 @@
+@CHARSET "UTF-8";
+/* 打印样式 */
+
+/* 页面设置 */
+@page {
+	size: A4 portrait; /* portrait | landscape */
+}
+
+@page :right {
+	@bottom-right {
+		content: counter(page)/counter(pages);
+	}
+}
+
+@page :left {
+	@bottom-left {
+		content: counter(page)/counter(pages);
+	}
+}
+
+/* 显示设置 */
+nav, aside {
+	display: none;
+}
+
+hr {
+	display: none;
+}
+
+body {
+	color: #000;
+	background: #fff;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+img {
+	max-width: 100% !important;
+}
+
+/* 分段设置 */
+h1, h2, h3, pre {
+	page-break-after: avoid;
+}
+
+ul, img, pre, table {
+	page-break-inside: avoid;
+}
+
+article {
+	page-break-before: always;
+}
+
+/* 超链接设置 */
+article a {
+	font-weight: bolder;
+	text-decoration: none;
+}
+
+article a[href^=http]:after {
+	content: " <" attr(href) "> ";
+}

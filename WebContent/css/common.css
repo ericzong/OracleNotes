@@ -1,0 +1,71 @@
+@CHARSET "UTF-8";
+
+ * {
+  	font-size:12px;
+  }
+  h1 {
+  	font-size:16px;
+  }
+  h2 {
+  	font-size:14px;
+  }
+  h3 {
+  	font-size:12px;
+  }
+  div.textarea {
+	border:1px solid;
+	width: 80%
+  }
+  div.code {
+	border:1px solid;
+	width: 80%
+  }
+  div.ext {
+  	border: 1px dotted;
+  	background-color: #eeeeee;
+  	width: 80%;
+  }
+  .bold {
+  	font-weight: bold;
+  }
+  .notice {
+  	color:red;
+  }
+  .delete {
+  	text-decoration:line-through;
+  }
+  table {
+  	border-collapse:collapse;
+  }
+  table, th, td {
+  	border: 1px solid;
+  	padding: 5px;
+  }
+
+/* 编号 */
+body {
+	counter-reset: h1num;
+}
+
+h1 {
+	counter-reset: h2num;
+}
+
+h2 {
+	counter-reset: h3num;
+}
+
+h1:before {
+	counter-increment: h1num;
+	content: counter(h1num) ". "
+}
+
+h2:before {
+	counter-increment: h2num;
+	content: counter(h1num) "." counter(h2num) ". "
+}
+
+h3:before {
+	counter-increment: h3num;
+	content: counter(h1num) "." counter(h2num) "." counter(h3num) ". "
+}
