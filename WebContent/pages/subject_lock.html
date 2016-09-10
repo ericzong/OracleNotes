@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Eric Zong">
+<title>锁（Lock）</title>
+<link type="text/css" rel="stylesheet" href="../css/common.css"  />
+<link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
+<link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<script type="text/javascript" src="../js/title.js"></script>
+</head>
+<body>
+  <h1>Oracle锁类型</h1>
+  <ul>
+    <li>DML锁（dada locks，数据锁）：用于保护数据的完整性；</li>
+    <li>DDL锁（dictionary locks，字典锁）：用于保护数据库对象的结构，如表、索引等的结构定义；</li>
+    <li>内部锁和闩（internal locks and latches）：保护数据库的内部结构。</li>
+  </ul>
+  <p>DML锁的目的在于保证并发情况下的数据完整性。在Oracle数据库中，DML锁主要包括TM锁和TX锁，其中TM锁称为表级锁，TX锁称为事务锁或行级锁。</p>
+  <p>当Oracle 执行DML语句时，系统自动在所要操作的表上申请TM类型的锁。当TM锁获得后，系统再自动申请TX类型的锁，并将实际锁定的数据行的锁标志位进行置位。这样在事务加锁前检查TX锁相容性时就不用再逐行检查锁标志，而只需检查TM锁模式的相容性即可，大大提高了系统的效率。TM锁包括了SS、SX、S、X 等多种模式，在数据库中用0－6来表示。不同的SQL操作产生不同类型的TM锁。</p>
+  <p>在数据行上只有X锁（排他锁）。在 Oracle数据库中，当一个事务首次发起一个DML语句时就获得一个TX锁，该锁保持到事务被提交或回滚。当两个或多个会话在表的同一条记录上执行DML语句时，第一个会话在该条记录上加锁，其他的会话处于等待状态。当第一个会话提交后，TX锁被释放，其他会话才可以加锁。</p>
+  <p>当Oracle数据库发生TX锁等待时，如果不及时处理常常会引起Oracle数据库挂起，或导致死锁的发生，产生ORA-60的错误。这些现象都会对实际应用产生极大的危害，如长时间未响应，大量事务失败等。</p>
+  
+  <h1>悲观封锁和乐观封锁</h1>
+  <h2>悲观封锁</h2>
+  <p>锁在用户修改之前就发挥作用：</p>
+  <p>Select ..for update（nowait)</p>
+  <p>Select * from tab1 for update</p>
+  <p>用户发出这条命令之后，oracle将会对返回集中的数据建立行级封锁，以防止其他用户的修改。</p>
+  <p>如果此时其他用户对上面返回结果集的数据进行dml或ddl操作都会返回一个错误信息或发生阻塞。</p>
+  <p>1：对返回结果集进行update或delete操作会发生阻塞。</p>
+  <p>2：对该表进行ddl操作将会报：Ora-00054:resource busy and acquire with nowait specified。</p>
+  <p class="bold">原因分析</p>
+  <p>此时Oracle已经对返回的结果集上加了排它的行级锁，所有其他对这些数据进行的修改或删除操作都必须等待这个锁的释放，产生的外在现象就是其他的操作将发生阻塞，直到这个操作commit或rollback。</p>
+  <p>同样这个查询的事务将会对该表加表级锁，不允许对该表的任何ddl操作，否则将会报出ora-00054错误：:resource busy and acquire with nowait specified。</p>
+  
+  <h2>乐观封锁</h2>
+  <p>乐观的认为数据在select出来到update进取并提交的这段时间数据不会被更改。这里面有一种潜在的危险就是由于被选出的结果集并没有被锁定，是存在一种可能被其他用户更改的可能。因此Oracle仍然建议使用悲观封锁，因为这样会更安全。</p>
+  
+  <h1>阻塞</h1>
+  <p>定义：当一个会话保持另一个会话正在请求的资源上的锁定时，就会发生阻塞。被阻塞的会话将一直挂起，直至持有锁的会话放弃锁定的资源为止。4个常见的DML语句会生产阻塞：</p>
+  <p>
+    INSERT<br />
+    UPDATE<br />
+    DELETE<br />
+    SELECT…FOR UPDATE
+  </p>
+  <p>Insert发生阻塞的唯一情况就是用户拥有一个建有主键约束的表。当2个的会话同时试图向表中插入相同的数据时，其中的一个会话将被阻塞，直到另外一个会话提交或会滚。一个会话提交时，另一个会话将收到主键重复的错误。回滚时，被阻塞的会话将继续执行。</p>
+  <p>UPDATE 和DELETE当执行Update和delete操作的数据行已经被另外的会话锁定时，将会发生阻塞，直到另一个会话提交或会滚。</p>
+  <p>当一个用户发出select..for update的操作准备对返回的结果集进行修改时，如果结果集已经被另一个会话锁定，就会发生阻塞。需要等另一个会话结束之后才可继续执行。可以通过发出 select… for update nowait的语句来避免发生阻塞，如果资源已经被另一个会话锁定，则会返回以下错误：Ora-00054:resource busy and acquire with nowait specified.</p>
+  <h1>死锁-deadlock</h1>
+  <p>定义：当两个用户希望持有对方的资源时就会发生死锁。</p>
+  <p>即两个用户互相等待对方释放资源时,oracle认定为产生了死锁,在这种情况下,将以牺牲一个用户作为代价,另一个用户继续执行,牺牲的用户的事务将回滚。</p>
+  <p>例子：</p>
+  <p>1：用户1对A表进行Update，没有提交。</p>
+  <p>2：用户2对B表进行Update，没有提交。（此时双方不存在资源共享的问题。）</p>
+  <p>3：如果用户2此时对A表作update,则会发生阻塞，需要等到用户一的事物结束。</p>
+  <p>4：如果此时用户1又对B表作update，则产生死锁。此时Oracle会选择其中一个用户进行会滚，使另一个用户继续执行操作。</p>
+  <p>起因：</p>
+  <p>Oracle的死锁问题实际上很少见，如果发生，基本上都是不正确的程序设计造成的，经过调整后，基本上都会避免死锁的发生。</p>
+  
+  <h1>DML锁分类表</h1>
+  <table>
+    <caption>表1 Oracle的TM锁类型</caption>
+    <thead>
+      <tr>
+        <th>锁模式</th>
+        <th> 锁描述</th>
+        <th> 解释</th>
+        <th> SQL操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>0</td>
+        <td>none</td>
+        <td>N/A</td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td>NULL </td>
+        <td>空 </td>
+        <td>Select</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>SS(Row-S)</td>
+        <td>行级共享锁，其他对象只能查询这些数据行</td>
+        <td>Select for update、Lock for update、Lock row share</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>SX(Row-X)</td>
+        <td>行级排它锁，在提交前不允许做DML操作</td>
+        <td>Insert、Update、Delete、Lock row share</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>S(Share)</td>
+        <td>共享锁</td>
+        <td>Create index、Lock share</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>SSX(S/Row-X)</td>
+        <td>共享行级排它锁</td>
+        <td>Lock share row exclusive</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>X(Exclusive)</td>
+        <td>排它锁</td>
+        <td>Alter table、Drop able、Drop index、Truncate table 、Lock exclusive</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h1>附录</h1>
+  <h2>V$lock表及相关视图的说明</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Column</th>
+        <th>Datatype</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>ADDR</td>
+        <td>RAW(4 | 8)</td>
+        <td>Address of lock state object</td>
+      </tr>
+      <tr>
+        <td>KADDR</td>
+        <td>RAW(4 | 8)</td>
+        <td>Address of lock</td>
+      </tr>
+      <tr>
+        <td>SID</td>
+        <td>NUMBER</td>
+        <td>Identifier for session holding or acquiring the lock</td>
+      </tr>
+      <tr>
+        <td>TYPE</td>
+        <td>VARCHAR2(2)</td>
+        <td>Type of user or system lockThe locks on the user types are obtained by user applications. Any process that is blocking others is likely to be holding one of these locks. The user type locks are:<br/>
+          <ul>
+            <li>TM - DML enqueue</li>
+            <li>TX - Transaction enqueue</li>
+            <li>UL - User supplied</li>
+          </ul>
+          <span class="comment">
+          --我们主要关注TX和TM两种类型的锁<br />
+          --UL锁用户自己定义的，一般很少会定义，基本不用关注<br />
+          --其它均为系统锁，会很快自动释放，不用关注
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td>ID1</td>
+        <td>NUMBER</td>
+        <td>Lock identifier #1 (depends on type)</td>
+      </tr>
+      <tr>
+        <td>ID2</td>
+        <td>NUMBER</td>
+        <td>Lock identifier #2 (depends on type) <br />
+          <span class="comment">--当lock type 为TM时，id1为DML-locked object的object_id<br/>
+          --当lock type 为TX时，id1为usn+slot，而id2为seq。<br/>
+          --当lock type为其它时，不用关注
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td>LMODE</td>
+        <td>NUMBER</td>
+        <td>Lock mode in which the session holds the lock:
+          <ul>
+            <li>0 - none</li>
+            <li>1 - null (NULL)</li>
+            <li>2 - row-S (SS)</li>
+            <li>3 - row-X (SX)</li>
+            <li>4 - share (S)</li>
+            <li>5 - S/Row-X (SSX)</li>
+            <li>6 - exclusive (X)</li>
+          </ul>
+          <span class="comment">
+          --大于0时表示当前会话以某种模式占有该锁，等于0时表示当前会话正在等待该锁资源，即表示该会话被阻塞。<br/>
+          --往往在发生TX锁时，伴随着TM锁，比如一个sid=9会话拥有一个TM锁，一般会拥有一个或几个TX锁，但他们的id1和id2是不同的，请注意
+          </span>
+        </td>
+      </tr>
+      <tr>
+        <td>REQUEST</td>
+        <td>NUMBER</td>
+        <td>Lock mode in which the process requests the lock:
+          <ul>
+            <li>0 - none</li>
+            <li>1 - null (NULL)</li>
+            <li>2 - row-S (SS)</li>
+            <li>3 - row-X (SX)</li>
+            <li>4 - share (S)</li>
+            <li>5 - S/Row-X (SSX)</li>
+            <li>6 - exclusive (X)</li>
+          </ul>
+          <span class="comment">--大于0时，表示当前会话被阻塞，其它会话占有改锁的模式</span>
+        </td>
+      </tr>
+      <tr>
+        <td>CTIME</td>
+        <td>NUMBER</td>
+        <td>Time since current mode was granted</td>
+      </tr>
+      <tr>
+        <td>BLOCK</td>
+        <td>NUMBER</td>
+        <td>The lock is blocking another lock0, 'Not Blocking',
+          <ul>
+            <li>1, 'Blocking',</li>
+            <li>2, 'Global',</li>
+          </ul>
+          <span class="comment">--该锁是否阻塞了另外一个锁</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h2>其它相关视图说明</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>视图名</th>
+        <th>描述</th>
+        <th>主要字段说明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>v$session</td>
+        <td>查询会话的信息和锁的信息。</td>
+        <td>
+          <ul>
+            <li>sid,serial#：表示会话信息。</li>
+            <li>program：表示会话的应用程序信息。</li>
+            <li>row_wait_obj#：表示等待的对象,和dba_objects中的object_id相对应。</li>
+            <li>lockwait :该会话等待的锁的地址,与v$lock的kaddr对应。</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>v$session_wait</td>
+        <td>查询等待的会话信息。</td>
+        <td>
+          <ul>
+            <li>sid：表示持有锁的会话信息。</li>
+            <li>Seconds_in_wait：表示等待持续的时间信息。</li>
+            <li>Event：表示会话等待的事件，锁等于enqueue。</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>dba_locks</td>
+        <td>对v$lock的格式化视图。</td>
+        <td>
+          <ul>
+            <li>Session_id：和v$lock中的Sid对应。</li>
+            <li>Lock_type：和v$lock中的type对应。</li>
+            <li>Lock_ID1： 和v$lock中的ID1对应。</li>
+            <li>Mode_held,mode_requested：和v$lock中的lmode,request相对应。</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>v$locked_object</td>
+        <td>只包含DML的锁信息，包括回滚段和会话信息。</td>
+        <td>
+          <ul>
+            <li>Xidusn,xidslot,xidsqn：表示回滚段信息。和v$transaction相关联。</li>
+            <li>Object_id：表示被锁对象标识。</li>
+            <li>Session_id：表示持有锁的会话信息。</li>
+            <li>Locked_mode：表示会话等待的锁模式的信息，和v$lock中的lmode一致。</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h2>相关查询</h2>
+  <p>1.查询数据库中的锁</p>
+  <pre class="code">select * from v$lock;
+select * from v$lock where block=1;</pre>
+  <p>2.查询被锁的对象</p>
+  <pre class="code">select * from v$locked_object;</pre>
+  <p>3.查询阻塞</p>
+  <pre class="code"><span class="comment">--查被阻塞的会话</span>
+select * from v$lock where lmode=0 and type in ('TM','TX');
+<span class="comment">--查阻塞别的会话锁</span>
+select * from v$lock where lmode>0 and type in ('TM','TX');</pre>
+  <p>4.查询数据库正在等待锁的进程</p>
+  <pre class="code">select * from v$session where lockwait is not null;</pre>
+  <p>5.查询会话之间锁等待的关系</p>
+  <pre class="code">select a.sid holdsid,b.sid waitsid,a.type,a.id1,a.id2,a.ctime from v$lock a,v$lock b
+  where a.id1=b.id1 and a.id2=b.id2 and a.block=1 and b.block=0;</pre>
+  <p>6.查询锁等待事件</p>
+  <pre class="code">select * from v$session_wait where event='enqueue';</pre>
+
+  <h2>强制解除锁定</h2>
+  <pre class="code"><span class="comment">--首先得到被锁对象的session_id</span>
+select session_id from v$locked_object; 
+<span class="comment">--通过上面得到的session_id去取得v$session的sid和serial#，然后对该进程进行终止。</span>
+SELECT sid, serial#, username, osuser FROM v$session where sid = session_id; 
+ALTER SYSTEM KILL SESSION 'sid,serial';</pre>
+
+</body>
+</html>

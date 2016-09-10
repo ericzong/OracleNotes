@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Eric Zong">
+<title>函数参考</title>
+<link type="text/css" rel="stylesheet" href="../css/common.css"  />
+<link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
+<link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<script type="text/javascript" src="../js/title.js"></script>
+</head>
+<body>
+  <h1>合计函数</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>函数</th>
+        <th>描述</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>avg(distinct|all|expression)</td>
+        <td>指定表达式的平均值，忽略空值</td>
+      </tr>
+      <tr>
+        <td>count(*|distinct|all|expression)</td>
+        <td>除去使表达式为空的行数量。如果希望得到表中所有行的数量，可以使用*，这时计算包括副本和空值</td>
+      </tr>
+      <tr>
+        <td>max(distinct|all|expression)</td>
+        <td>指定表达式的最大值，忽略空值</td>
+      </tr>
+      <tr>
+        <td>min(distinct|all|expression)</td>
+        <td>指定表达式的最小值，忽略空值</td>
+      </tr>
+      <tr>
+        <td>stddev(distinct|all|x)</td>
+        <td>指定表达式的标准偏差，忽略空值</td>
+      </tr>
+      <tr>
+        <td>sum(distinct|all|expression)</td>
+        <td>指定表达式的汇总值，忽略空值</td>
+      </tr>
+      <tr>
+        <td>variance(distinct|all|x)</td>
+        <td>指定表达式的方差，忽略空值</td>
+      </tr>
+    </tbody>  	
+  </table>
+  
+  <h1>字符函数</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>函数</th>
+          <th>描述</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ascii(x)</td>
+          <td>返回字符x的ASCII码值</td>
+      </tr>
+        <tr>
+          <td>chr(x)</td>
+          <td>返回ASCII值x的对应字符</td>
+      </tr>
+        <tr>
+          <td>concat(x, y)</td>
+          <td>把y附加在x上，返回附加后的结果</td>
+      </tr>
+        <tr>
+          <td>initcap(x)</td>
+          <td>将字符串x中的每一个英文单词转变为首字母大写的形式</td>
+      </tr>
+        <tr>
+          <td>instr(x, find_string[, start][, occurrence]</td>
+          <td>在字符串x中搜索find_string，返回find_string出现的位置。可以有选择地提供开始搜索的位置start。还可以有选择地提供一个表示出现次数的occurrence，表示当find_string出现occurrence次时才返回</td>
+      </tr>
+        <tr>
+          <td>length(x)</td>
+          <td>返回字符串x的长度</td>
+      </tr>
+        <tr>
+          <td>lower(x)</td>
+          <td>把字符串x中的字符转变为小写字母</td>
+      </tr>
+        <tr>
+          <td>lpad(x, width[, pad_string])</td>
+          <td>使用空格补齐字符串x的左边，使得其长度为width。如果提供了可选择的pad_string，那么使用pad_string重复补齐字符串x，使得其长度为width</td>
+      </tr>
+        <tr>
+          <td>ltrim(x[, trim_string])</td>
+          <td>删除字符串x左边的字符。可以使用可选择的trim_string来指定将要被删除的字符。如果没有提供trim_string，默认情况下删除左边的空格。</td>
+      </tr>
+        <tr>
+          <td>nanvl(x, value)</td>
+          <td>如果x不是数字，那么返回value，否则返回x</td>
+      </tr>
+        <tr>
+          <td>nvl(x, value)</td>
+          <td>如果x是空值，返回value；否则返回x</td>
+      </tr>
+        <tr>
+          <td>nvl2(x, value1, value2)</td>
+          <td>如果x不是空值，返回value1；否则返回value2</td>
+      </tr>
+        <tr>
+          <td>replace(x, search_string, replace_string)</td>
+          <td>在字符串x中搜索search_string，如果找到则使用replace_string字符串替换</td>
+      </tr>
+        <tr>
+          <td>rpad(x, width[, pad_string])</td>
+          <td>其功能类似于lpad，但是从右边补齐</td>
+      </tr>
+        <tr>
+          <td>rtrim(x[, trim_string])</td>
+          <td>其功能类似于ltrim，但是从右边删除</td>
+      </tr>
+        <tr>
+          <td>soundex(x)</td>
+          <td>返回包含了字符串x的音标</td>
+      </tr>
+        <tr>
+          <td>substr(x, start[, length])</td>
+          <td>返回字符串x的子串，开始位置是start。可选择的length参数表示子串的长度</td>
+      </tr>
+        <tr>
+          <td>trim([trim_char from] x)</td>
+          <td>删除字符串x中左右两端的一些字符。如果提供了可选择的trim_char，那么删除trim_char字符串；否则删除空格</td>
+      </tr>
+        <tr>
+          <td>upper(x)</td>
+          <td>把字符串x中的字母转换成大写字母</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h1>数学函数</h1>
+    <table>
+    <thead>
+      <tr>
+        <th>函数</th>
+          <th>描述</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>abs(x)</td>
+          <td>返回x的绝对值</td>
+      </tr>
+        <tr>
+          <td>acos(x)</td>
+          <td>返回x的反余弦值</td>
+      </tr>
+        <tr>
+          <td>asin(x)</td>
+          <td>返回x的反正弦值</td>
+      </tr>
+        <tr>
+          <td>atan(x)</td>
+          <td>返回x的反正切值</td>
+      </tr>
+        <tr>
+          <td>atans(x, y)</td>
+          <td>返回x和y的反正切值</td>
+      </tr>
+        <tr>
+          <td>bitand(x)</td>
+          <td>返回x和y的二进制“与”的结果</td>
+      </tr>
+        <tr>
+          <td>cos(x)</td>
+          <td>返回x余弦值，其中x是以弧度表示的角度</td>
+      </tr>
+        <tr>
+          <td>cosh(x)</td>
+          <td>返回x的双曲余弦值</td>
+      </tr>
+        <tr>
+          <td>ceil(x)</td>
+          <td>返回大于或等于x的最小整数</td>
+      </tr>
+        <tr>
+          <td>exp(x)</td>
+          <td>返回e的x次幂，其中e等于2.71828183</td>
+      </tr>
+        <tr>
+          <td>floor(x)</td>
+          <td>返回小于或等于x的最大整数</td>
+      </tr>
+        <tr>
+          <td>log(x, y)</td>
+          <td>返回底为x的y的对数值</td>
+      </tr>
+        <tr>
+          <td>ln(x)</td>
+          <td>返回x的自然对数值</td>
+      </tr>
+        <tr>
+          <td>mod(x, y)</td>
+          <td>返回x除以y的余数</td>
+      </tr>
+        <tr>
+          <td>power(x, y)</td>
+          <td>返回x的y次幂</td>
+      </tr>
+        <tr>
+          <td>round(x[, y])</td>
+          <td>圆整x值。如果不指定y，则圆整到整数；如果指定y，则圆整到y指定的小数点位数；如果y是负数，则圆整到小数点左端的位数</td>
+      </tr>
+        <tr>
+          <td>sign(x)</td>
+          <td>符号函数，如果x是负数，则返回-1；如果x是正数，则返回1；如果x是0，则返回0</td>
+      </tr>
+        <tr>
+          <td>sin(x)</td>
+          <td>返回x的正弦值</td>
+      </tr>
+        <tr>
+          <td>sinh(x)</td>
+          <td>返回x的双曲正弦值</td>
+      </tr>
+        <tr>
+          <td>sqrt(x)</td>
+          <td>返回x的平方根</td>
+      </tr>
+        <tr>
+          <td>tan(x)</td>
+          <td>返回x的正切值</td>
+      </tr>
+        <tr>
+          <td>tanh(x)</td>
+          <td>返回x的双曲正切值</td>
+      </tr>
+        <tr>
+          <td>trunk(x[, y])</td>
+          <td>截断x值。如果不指定y，则截断到整数；如果指定y，则截断到y指定的小数点位数；如果y是负数，则截断到小数点左端的位数</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h1>转换函数</h1>
+    <table>
+    <thead>
+      <tr>
+        <th>函数</th>
+          <th>描述</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>asciistr(x)</td>
+          <td>把x转变成ASCII字符串，其中x可以是任何字符集中的字符串</td>
+      </tr>
+        <tr>
+          <td>bin_to_num(x)</td>
+          <td>把x转变成一个二进制数字，返回值是数字</td>
+      </tr>
+        <tr>
+          <td>cast(x as type_name)</td>
+          <td>把x从一种数据类型转换为type_name参数指定的数据类型</td>
+      </tr>
+        <tr>
+          <td>chartorowid(x)</td>
+          <td>把x转变为rowid值</td>
+      </tr>
+        <tr>
+          <td>compose(x)</td>
+          <td>把x转换成Unicode字符串。Unicode使用两字节的字符集，并且可以表示65000多个字符，可以用于表示非英语字符。</td>
+      </tr>
+        <tr>
+          <td>convert(x, source_char_set, dest_char_set)</td>
+          <td>把x从source_char_set转变成dest_char_set</td>
+      </tr>
+        <tr>
+          <td>decode(x, search, result, default)</td>
+          <td>比较x和search，如果两者相等，则decode()函数返回search，否则返回default</td>
+      </tr>
+        <tr>
+          <td>decompose(x)</td>
+          <td>把x转换成Unicode字符串</td>
+      </tr>
+        <tr>
+          <td>hextoraw(x)</td>
+          <td>把包含了十六进制的x字符转变成二进制数字，返回结果是raw数值</td>
+      </tr>
+        <tr>
+          <td>numtodsinterval(x)</td>
+          <td>把数值x转换成interval day to second类型</td>
+      </tr>
+        <tr>
+          <td>numtoyminterval(x)</td>
+          <td>把数值x转换成interval year to month类型</td>
+      </tr>
+        <tr>
+          <td>rawtohex(x)</td>
+          <td>把二进制数据x转换成包含了等价的十六进制数字的varchar2字符</td>
+      </tr>
+        <tr>
+          <td>rawtonhex(x)</td>
+          <td>把二进制数据x转换成包含了等价的十六进制数字的nvarchar2字符。Nvarchar2用于存储国际字符集的数据</td>
+      </tr>
+        <tr>
+          <td>rowidtochar(x)</td>
+          <td>把rowid类型的x转换成varchar2字符</td>
+      </tr>
+        <tr>
+          <td>rowidtonchar(x)</td>
+          <td>把rowid类型的x转换成nvarchar2字符</td>
+      </tr>
+        <tr>
+          <td>to_binary_double(x)</td>
+          <td>把x转换成binary_double</td>
+      </tr>
+        <tr>
+          <td>to_binary_float(x)</td>
+          <td>把x转换成binary_float</td>
+      </tr>
+        <tr>
+          <td>to_char(x[, format])</td>
+          <td>把x转换成varchar2字符串。可以提供一个可选择的字符格式format</td>
+      </tr>
+        <tr>
+          <td>to_clob(x)</td>
+          <td>把x转换成一个字符大对象</td>
+      </tr>
+        <tr>
+          <td>to_date(x[, format])</td>
+          <td>把x转换成日期</td>
+      </tr>
+        <tr>
+          <td>to_dsinterval(x)</td>
+          <td>把字符串x转变成interval day to second类型</td>
+      </tr>
+        <tr>
+          <td>to_multi_byte(x)</td>
+          <td>把x中的单字节字符转换成多字节字符</td>
+      </tr>
+        <tr>
+          <td>to_nchar(x)</td>
+          <td>把x转换成nvarchar2</td>
+      </tr>
+        <tr>
+          <td>to_nclob(x)</td>
+          <td>把x转换成nclob</td>
+      </tr>
+        <tr>
+          <td>to_number(x[, format])</td>
+          <td>把x转换成number</td>
+      </tr>
+        <tr>
+          <td>to_single_byte(x)</td>
+          <td>把x中的多字节字符转变单字节字符</td>
+      </tr>
+        <tr>
+          <td>to_timestamp(x)</td>
+          <td>把字符串x转换成timestamp</td>
+      </tr>
+        <tr>
+          <td>to_timestamp_tz(x)</td>
+          <td>把字符串x转换成timestamp with time zone</td>
+      </tr>
+        <tr>
+          <td>to_yminterval(x)</td>
+          <td>把字符串x转换成interval year to month</td>
+      </tr>
+        <tr>
+          <td>translate(x, from_string, to_string)</td>
+          <td>把出现在x中的所有from_string替换为to_string</td>
+      </tr>
+        <tr>
+          <td>unistr(x)</td>
+          <td>把x中的字符转变成nchar字符集</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="bold">Format参数</p>
+  <table>
+    <thead>
+      <tr>
+        <th>9</th>
+          <th>返回数字。如果数字是负数，则数字前面有负号</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>0</td>
+          <td>0999表示数字前面有0，9990表示数字后面有0</td>
+      </tr>
+        <tr>
+          <td>.</td>
+          <td>表示小数点的位置</td>
+      </tr>
+        <tr>
+          <td>,</td>
+          <td>表示在指定的位置显示逗号</td>
+      </tr>
+        <tr>
+          <td>$</td>
+          <td>$99表示数字前面是用货币号</td>
+      </tr>
+        <tr>
+          <td>B</td>
+          <td>表示如果整数部分为0，则使用空格表示</td>
+      </tr>
+        <tr>
+          <td>C</td>
+          <td>在指定的位置使用ISO标准货币符号</td>
+      </tr>
+        <tr>
+          <td>D</td>
+          <td>在指定的位置返回小数点的位置</td>
+      </tr>
+        <tr>
+          <td>EEEE</td>
+          <td>使用科学记数法记数</td>
+      </tr>
+        <tr>
+          <td>FM</td>
+          <td>删除数字的前后空格</td>
+      </tr>
+        <tr>
+          <td>G</td>
+          <td>在指定的位置显示分组符号</td>
+      </tr>
+        <tr>
+          <td>L</td>
+          <td>在指定的位置显示本地货币符号</td>
+      </tr>
+        <tr>
+          <td>MI</td>
+          <td>负数的尾部有负号，正数的尾部有空格</td>
+      </tr>
+        <tr>
+          <td>PR</td>
+          <td>负数的尾部有三角括号(&lt;>)，正数的头部和尾部有空格 </td>
+      </tr>
+        <tr>
+          <td>RN/rn</td>
+          <td>返回罗马数字，RN表示大写罗马数字，rn表示小写罗马数字。数字必须是1~3999之间的整数</td>
+      </tr>
+        <tr>
+          <td>S</td>
+          <td>S999表示负数的前面有负号，正数的前面有正号。999S表示负数的后面有负数，正数的后面有正号</td>
+      </tr>
+        <tr>
+          <td>TM</td>
+          <td>使用最小的字符数返回数字</td>
+      </tr>
+        <tr>
+          <td>U</td>
+          <td>在指定位置返回双货币号</td>
+      </tr>
+        <tr>
+          <td>V</td>
+          <td>返回一个数字乘以10X，其中x为字符数字</td>
+      </tr>
+        <tr>
+          <td>X</td>
+          <td>返回十六进制数字。如果该数字不是整数，则圆整为整数</td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>

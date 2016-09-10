@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Eric Zong">
+<title>问题清单</title>
+<link type="text/css" rel="stylesheet" href="../css/common.css"  />
+<link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
+<link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<script type="text/javascript" src="../js/title.js"></script>
+</head>
+<body>
+  <h1>删除无效的Oracle监听项</h1>
+  <p>删除注册表项：</p>
+  <div class="textarea">
+  \HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\***
+  </div>
+  
+  <h1>Oracle监听在优化后无法启动</h1>
+  <p>在注册表中找到Oracle监听服务，如下：</p>
+  <div class="textarea">
+  HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\OracleOraDb10g_home1TNSListener
+  </div>
+  <p>可以发现该项下缺少了ImagePath可扩展字符串值，于是新建该值并设置值为：</p>
+  <div class="textarea">
+  C:\oracle\product\10.2.0\db_1\BIN\tnslsnr.EXE
+  </div>
+  <p>可能需要重启下电脑才可生效。</p>
+  <p class="notice">注：tnslsnr不能大写，不然会报1053错误。</p>
+  
+  <h1>强制断开已连接用户</h1>
+  <pre class="code">
+select sid,serial# from v$session where username='USERNAME';
+alter system kill session 'sid,serial';</pre>
+</body>
+</html>
