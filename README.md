@@ -1,2 +1,2 @@
-# OracleNotes
+# Oracle Notes
 Oracle notes
