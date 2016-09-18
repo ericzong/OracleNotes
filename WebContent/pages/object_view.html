@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Eric Zong">
+<title>视图（View）</title>
+<link type="text/css" rel="stylesheet" href="../css/common.css"  />
+<link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
+<link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<script type="text/javascript" src="../js/title.js"></script>
+</head>
+<body>
+  <h1>分类</h1>
+  <ul>
+    <li>关系视图</li>
+    <li>内嵌视图</li>
+    <li>对象视图</li>
+    <li>物化视图</li>
+  </ul>
+  
+  <h1>更新</h1>
+  <pre class="code">
+<span class="comment">--内嵌视图更新表数据</span>
+UPDATE 
+  (SELECT SALARY
+       FROM EMPLOYEES
+  )
+SET SALARY = SALARY + 300;</pre>
+</body>
+</html>

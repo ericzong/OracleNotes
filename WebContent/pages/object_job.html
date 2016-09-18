@@ -14,6 +14,10 @@
   <pre class="code">
 dbms_scheduler.run_job([name=>]&lt;JOB_NAME>);</pre>
 
+  <h1>停止</h1>
+  <pre class="code">
+dbms_scheduler.stop_job('&lt;JOB_NAME, SYS.DEFAULT_JOB_CLASS>');</pre>
+
   <h1>禁/启用</h1>
   <pre class="code">
 dbms_scheduler.disable([name=>]&lt;JOB_NAME>);
