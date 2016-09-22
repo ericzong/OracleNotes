@@ -43,5 +43,12 @@ PURGE TABLESPACE &lt;TS_NAME> USER &lt;USER_NAME>;
   <pre class="code">
 select * from SYS.USER_DEPENDENCIES</pre>
 
+  <h1>事务</h1>
+  <pre class="code">
+set transaction read only | read write; 
+set transaction isolation level serializable | read commited; 
+
+<span class="comment">--子程序自治事务</span>
+pragma autonomous_transaction;</pre>
 </body>
 </html>

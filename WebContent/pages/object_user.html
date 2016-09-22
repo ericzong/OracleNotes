@@ -12,9 +12,24 @@
 <body>
   <h1>创建</h1>
   <pre class="code">
-create user &lt;user_name> identified by &lt;password>
-  default tablespace &lt;tablespace_name>
-  temporary tablespace &lt;temporary_tablespace_name>;</pre>
+CREATE USER username
+  IDENTIFIED BY [password|EXTERNALLY|]
+  [DEFAULT TABLESPACE  UserTableSpaceName]
+  [TEMPORARY TABLESPACE TempTableSpaceName]
+  [PROFILE FILENAME]
+  [QUOTA n M|K|UNLIMITED on UserTableSpaceName]
+  [ACCOUNT LOCK |UNLOCK];</pre>
+  
+  <h1>修改</h1>
+  <pre class="code">
+Alter USER username
+  IDENTIFIED BY [password|EXTERNALLY|]
+  [DEFAULT TABLESPACE  UserTableSpaceName]
+  [TEMPORARY TABLESPACE TempTableSpaceName]
+  [PROFILE FILENAME]
+  [QUOTA n M|K|UNLIMITED on UserTableSpaceName]
+  DAFAULT ROLE ROLE_LIST|ALL|EXCEPT ROLE_LIST|NONE
+  [ACCOUNT LOCK |UNLOCK];</pre>
   
   <h1>删除</h1>
   <pre class="code">
