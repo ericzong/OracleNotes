@@ -18,7 +18,26 @@
     <li>物化视图</li>
   </ul>
   
-  <h1>更新</h1>
+  <h1>关系视图</h1>
+  <h2>创建</h2>
+  <pre class="code">
+CREATE [OR REPLACE] [FORCE|NOFORCE] VIEW &lt;VIEW_NAME>[(ALIAS1，ALIAS2...)]
+  AS &lt;SUBQUERY>
+  [WITH CHECK OPTION [CONSTRAINT &lt;CONSTRAINT_NAME>]]
+  [WITH READ ONLY];</pre>
+  
+  <h2>编译</h2>
+  <pre class="code">
+alter view &lt;VIEW_NAME> compile;</pre>
+
+  <h2>查询</h2>
+  <pre class="code">
+select * from user_views;
+select * from all_views;
+select * from dba_views;</pre>
+  
+  <h1>内嵌视图</h1>
+  <h2>更新</h2>
   <pre class="code">
 <span class="comment">--内嵌视图更新表数据</span>
 UPDATE 
@@ -26,5 +45,19 @@ UPDATE
        FROM EMPLOYEES
   )
 SET SALARY = SALARY + 300;</pre>
+  <h1>对象视图</h1>
+  <h2>创建</h2>
+  <pre class="code">
+CREATE TYPE TypeName IS OBJECT({ColumnDefinition});
+
+CREATE OR REPLACE VIEW ViewName
+  OF ObjectName
+  WITH OBJECT OID(ObjectColumnName) AS
+    SELECT … FROM TableName;
+</pre>
+  
+  <h1>物化视图</h1>
+  
+
 </body>
 </html>
