@@ -28,5 +28,18 @@ SELECT ename, sal, comm, deptno FROM emp
 <span class="comment">--非成对比较示例</span>
 SELECT ename, sal, comm, deptno FROM emp
   WHERE sal IN (SELECT sal FROM emp WHERE deptno=30) AND nvl(comm, -1) IN (SELECT nvl(comm, -1) FROM emp WHERE deptno=30);</pre>  
+  
+  <h1>排序</h1>
+  
+  
+  <h1>附录</h1>
+  <h2>转义</h2>
+  <p>escape 子句可把“_”和“%”从特殊标志返回到普通字符。escape 子句用来指定一个退出符号，该退出符号后面的字符被作为普通字符对待。</p>
+  <pre class="code">
+select ... from ...
+  where ... like 'A<span class="notice">\</span>%' escape '<span class="notice">\</span>';</pre>
+  
+  <h2>其它</h2>
+  <p>between...and... 包含边界值。</p>
 </body>
 </html>
