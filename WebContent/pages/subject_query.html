@@ -11,7 +11,8 @@
 </head>
 <body>
   <h1>多表查询</h1>
-  <p>多表查询的条件：不能少于表的个数-1，如4张表的关联至少需要3个条件才能避免出现笛卡尔积。</p>
+  <p>连接查询的理论基础是笛卡尔积。</p>
+  <p>多表查询的连接条件：不能少于表的个数-1，如4张表的关联至少需要3个条件才能避免出现笛卡尔积。</p>
   
   <h1>多列子查询</h1>
   <p>多列子查询则是指返回多列数据的子查询语句。</p>
@@ -30,7 +31,32 @@ SELECT ename, sal, comm, deptno FROM emp
   WHERE sal IN (SELECT sal FROM emp WHERE deptno=30) AND nvl(comm, -1) IN (SELECT nvl(comm, -1) FROM emp WHERE deptno=30);</pre>  
   
   <h1>排序</h1>
+  <p>排序可以使用以下方式：</p>
+  <ul>
+    <li>列名</li>
+    <li>表达式</li>
+    <li>别名</li>
+    <li>数字序号</li>
+  </ul>
   
+  <h2>表达式排序</h2>
+  <p>除了直接指定列名排序外，还可依据表达式对数据排序。</p>
+  <pre class="code">
+select * from emp order by sal*12 desc;</pre>
+
+  <h2>别名排序</h2>
+  <p>排序操作可使用别名。若在 select 语句中定义了列的别名，那么该列名可以使用在 order by 子句中，对于包含了表达式的排序来说，
+  使用别名排序可以增强查询结果的可读性。</p>
+  
+  <h2>数字序号排序</h2>
+  <p>排序操作可使用数字序号代替列名称。数字序号代表列名称由 select 子句后面的列名顺序决定。</p>
+  <pre class="code">
+select ename, job, hiredate, sal from emp
+  order by hiredate, sal desc;
+等价于：
+select ename, job, hiredate, sal from emp
+  order by 3 sal desc;
+  </pre>
   
   <h1>附录</h1>
   <h2>转义</h2>
