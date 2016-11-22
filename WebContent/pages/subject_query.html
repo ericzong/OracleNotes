@@ -3,25 +3,164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="author" content="Eric Zong">
-<title>查询</title>
+<title>查询（待完善）</title>
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
 <script type="text/javascript" src="../js/title.js"></script>
 </head>
 <body>
   <h1>多表查询</h1>
-  <p>连接查询的理论基础是笛卡尔积。</p>
+  <p>连接查询的理论基础是笛卡尔积。所有连接运算的结果都是笛卡尔积的子集。</p>
   <p>多表查询的连接条件：不能少于表的个数-1，如4张表的关联至少需要3个条件才能避免出现笛卡尔积。</p>
   
-  <h1>多列子查询</h1>
+  <h2>分类</h2>
+  <div class="tree">
+    <ul>
+      <li>
+        <a href="#">连接查询</a>
+        <ul>
+          <li>
+            <a href="#">内连接</a>
+            <ul>
+              <li><a href="#">等价内连接</a></li>
+              <li><a href="#">非等价内连接</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#">外连接</a>
+            <ul>
+              <li><a href="#">左外连接</a></li>
+              <li><a href="#">右外连接</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#">自连接</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  
+  <h2>定义</h2>
+  <dl>
+    <dt title="Inner Join">内连接</dt>
+    <dd>???</dd>
+    <dt>等价内连接</dt>
+    <dd>在连接列相等的条件下执行的连接操作。</dd>
+    <dt>非等价内连接</dt>
+    <dd>在连接列不相等的条件下执行的连接操作。</dd>
+    <dt title="Outer Join">外连接</dt>
+    <dd>只用于两个表连接，限制其中一个表的行，而不限制另外一个表中的行。</dd>
+    <dt title="Left Outer Join">左外连接</dt>
+    <dd>???</dd>
+    <dt title="Right Outer Join">右外连接</dt>
+    <dd>???</dd>
+    <dt>自连接</dt>
+    <dd>把某一个表中的行同该表中另外一些行连接起来。</dd>
+  </dl>
+  
+  <h2>层次查询</h2>
+  <h3>语法</h3>
+  <pre class="code">
+select level, &lt;column_list>, &lt;expression_list> from &lt;table>
+  [where &lt;condition>]
+  start with &lt;start_condition>
+  connect by prior &lt;prior_condition>;</pre>
+  <dl>
+    <dt>level</dt>
+    <dd>伪列，树层次</dd>
+    <dt>column_list</dt>
+    <dd>查询的列名</dd>
+    <dt>expression_list</dt>
+    <dd>查询的表达式</dd>
+    <dt>condition</dt>
+    <dd>过滤数据的条件</dd>
+    <dt>start_condition</dt>
+    <dd>层次查询开始节点查询条件</dd>
+    <dt>prior_condition</dt>
+    <dd>父子节点关系</dd>
+  </dl>
+  <p>例如：</p>
+  <pre class="code">
+select part_id, parent_id, part_name, mp_cost from bicycle
+  start with part_id = 1
+  connect by prior part_id = parent_id;</pre>
+  
+  <h3>排序及过滤</h3>
+  <p>在层次查询中，自底向上遍历只需要交换 connct by 中父子节点的位置。</p>
+  <p>数据过滤</p>
+  <ul>
+    <li>过滤指定节点：在 where 子句中指定过滤该节点的条件</li>
+    <li>过滤指定分支：在 connect by 子句中增加过滤条件</li>
+  </ul>
+  
+  <h1>子查询</h1>
+  
+  <h2>概述</h2>
+  
+  <h3>原则</h3>
+  <div class="textarea">
+    <ol>
+      <li>必须括起来</li>
+      <li>只出现在 where 子句中比较运算符右端</li>
+      <li>不能包含 order by 子句，外查询可以有一个 order by</li>
+      <li>允许嵌套</li>
+      <li>可使用两种比较运算符：单行/多行运算符</li>
+    </ol>
+  </div>
+  
+  <h3>分类</h3>
+  <div class="textarea">
+    <ul>
+      <li>单行子查询</li>
+      <li>多行子查询</li>
+      <li>多列子查询</li>
+    </ul>
+  </div>
+  <dl>
+    <dt>单行子查询</dt>
+    <dd>只返回单行单列的结果，即常量值。</dd>
+    <dt>多行子查询</dt>
+    <dd>返回多行单列的结果，即一系列值。</dd>
+    <dt>多列子查询</dt>
+    <dd>返回多列的结果。</dd>
+  </dl>
+  <div class="textarea">
+    <p>单行子查询运算符：=、>、>=、&lt;、&lt;=、&lt;>、!=、^= 等。</p>
+    <p>多行子查询运算符：in、any、all 等。</p>
+  </div>
+  
+  <h2>多列子查询</h2>
   <p>多列子查询则是指返回多列数据的子查询语句。</p>
   <pre class="code">select * from emp where (deptno,job)=(select deptno,job from emp where ename = 'Smith');</pre>
-  <h2>单行比较 vs. 多行比较</h2>
+  
+  <h3>语法</h3>
+  <p>多列子查询语法</p>
+  <pre class="code">
+select &lt;column_list> from &lt;table>
+  where &lt;condition_column_list> in (
+    select &lt;sub_column_list> from &lt;sub_table>
+      where &lt;sub_condition>
+  );  </pre>
+  <p>多列子查询更新语法</p>
+  <pre class="code">
+update table set (&lt;column_list>) = (
+  select &lt;column_list> from table
+    where &lt;condition>
+);  </pre>
+  
+  <h3>单行比较 vs. 多行比较</h3>
   <p>当多列子查询返回单行数据时，在where子句中可以使用单行比较符。（=，!=，...）</p>
   <p>而返回多行数据时，在where字句中必须使用多行比较符。（in，all，any）</p>
-  <h2>成对比较 vs. 非成对比较</h2>
-  <p>使用子查询比较多个列的数据时，既可以使用成对比较，也可以使用非成对比较。其中，成对比较要求多个列的数据必须同时匹配，而非成对比较则不要求多个列的数据必须同时匹配。</p>
+  <h3>成对比较 vs. 非成对比较</h3>
+  <dl>
+    <dt>成对比较</dt>
+    <dd>当多个列同时相等时，才可以称为满足匹配的条件。</dd>
+    <dt>非成对比较</dt>
+    <dd>即使不是成对相等，也可以称为满足匹配的条件。</dd>
+  </dl>
   <pre class="code">
 <span class="comment">--成对比较示例</span>
 SELECT ename, sal, comm, deptno FROM emp
@@ -29,6 +168,9 @@ SELECT ename, sal, comm, deptno FROM emp
 <span class="comment">--非成对比较示例</span>
 SELECT ename, sal, comm, deptno FROM emp
   WHERE sal IN (SELECT sal FROM emp WHERE deptno=30) AND nvl(comm, -1) IN (SELECT nvl(comm, -1) FROM emp WHERE deptno=30);</pre>  
+  
+  <h2>注意</h2>
+  <p>内查询的结果是空值，外查询的条件始终不会成立。</p>
   
   <h1>排序</h1>
   <p>排序可以使用以下方式：</p>
@@ -57,6 +199,18 @@ select ename, job, hiredate, sal from emp
 select ename, job, hiredate, sal from emp
   order by 3 sal desc;
   </pre>
+  
+  <h1>集合运算</h1>
+  <dl>
+    <dt>union</dt>
+    <dd>并集运算，所有数据行相加，消除重复行。</dd>
+    <dt>union all</dt>
+    <dd>并集运算，不消除重复行，简单合并结果。</dd>
+    <dt>intersect</dt>
+    <dd>交集运算</dd>
+    <dt>minus</dt>
+    <dd>差集运算</dd>
+  </dl>
   
   <h1>附录</h1>
   <h2>转义</h2>
