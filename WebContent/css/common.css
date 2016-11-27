@@ -2,82 +2,99 @@
 
 /* 字体外观 */
 * {
-  	font-size:12px;
-  }
-  h1 {
-  	font-size:16px;
-  }
-  h2 {
-  	font-size:14px;
-  }
-  h3 {
-  	font-size:12px;
-  }
-  .bold {
-  	font-weight: bold;
-  }
-  .notice {
-  	color:red;
-  }
-  .delete {
-  	text-decoration:line-through;
-  }
+	font-size: 12px;
+}
+
+h1 {
+	font-size: 16px;
+}
+
+h2 {
+	font-size: 14px;
+}
+
+h3 {
+	font-size: 12px;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.notice {
+	color: red;
+}
+
+.delete {
+	text-decoration: line-through;
+}
 
 /* 排版 */
-  body > p {
-    text-indent:2em;
-  }
-  div.list > ol > li {
-    list-style-type: upper-roman;
-  }
-  div.list > ol > li > ol > li {
-    list-style-type: lower-roman;
-  }
-  div.textarea {
-	border:1px solid;
+body>p {
+	text-indent: 2em;
+}
+
+div.textarea {
+	border: 1px solid;
 	width: 80%;
 	padding: 5px;
-  }
-  div.code {
-	border:1px solid;
+}
+
+div.code {
+	border: 1px solid;
 	width: 80%;
 	padding: 5px;
-  }
-  div.ext {
-  	border: 1px dotted;
-  	background-color: #eeeeee;
-  	width: 80%;
-  	padding:5px;
-  }
-  div.ext ul, ol{
-    margin:0;
-    margin-left:2em;
-    padding:0;
-  }
-  div.ext li, p{
-    margin:0;
-  }
-  pre.textarea {
-	border:1px solid;
+}
+
+div.ext {
+	border: 1px dotted;
+	background-color: #eeeeee;
 	width: 80%;
 	padding: 5px;
-  }
-  pre.code {
-    border: 1px solid;
-    width:80%;
-    padding: 5px;
-  }
-  
+}
+
+div.ext ul, ol {
+	margin: 0;
+	margin-left: 2em;
+	padding: 0;
+}
+
+div.ext li, p {
+	margin: 0;
+}
+
+pre.textarea {
+	border: 1px solid;
+	width: 80%;
+	padding: 5px;
+}
+
+pre.code {
+	border: 1px solid;
+	width: 80%;
+	padding: 5px;
+}
+
 /* 表格 */
-  table {
-  	border-collapse:collapse;
-  }
-  table, th, td {
-  	border: 1px solid;
-  	padding: 5px;
-  }
+table {
+	border-collapse: collapse;
+}
+
+table, th, td {
+	border: 1px solid;
+	padding: 5px;
+}
 
 /* 编号 */
+/* 有序列表第一级列表项索引为大写罗马数字 */
+div.list>ol>li {
+	list-style-type: upper-roman;
+}
+/* 有序列表第二级列表项索引为小写罗马数字 */
+div.list>ol>li>ol>li {
+	list-style-type: lower-roman;
+}
+
 body {
 	counter-reset: h1num;
 }
