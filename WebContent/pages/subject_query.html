@@ -11,6 +11,46 @@
 <script type="text/javascript" src="../js/title.js"></script>
 </head>
 <body>
+  <h1>复杂查询</h1>
+  <h2>查询情景</h2>
+  <div class="list">
+    <ol>
+      <li>
+        decode函数
+        <div class="code">
+          decode(value_expression, search_value, result_value, default_value)
+        </div>
+      </li>
+      <li>
+        case 表达式
+        <ol>
+          <li>
+            简单 case 表达式
+            <pre class="code">
+case search_expression
+  when expression_1 then display_result1
+  when expression_2 then display_result2
+  ...
+  when expression_n then display_result_n
+  else default_display_result
+end</pre>
+          </li>
+          <li>
+            搜索 case 表达式
+            <pre class="code">
+case
+  when expression_1 then display_result_1
+  when expression_2 then display_result_2
+  ...
+  when expression_n then display_result_n
+  else default_display_result
+end</pre>
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </div>
+
   <h1>多表查询</h1>
   <p>连接查询的理论基础是笛卡尔积。所有连接运算的结果都是笛卡尔积的子集。</p>
   <p>多表查询的连接条件：不能少于表的个数-1，如4张表的关联至少需要3个条件才能避免出现笛卡尔积。</p>

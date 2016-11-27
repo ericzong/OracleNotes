@@ -27,6 +27,12 @@
   body > p {
     text-indent:2em;
   }
+  div.list > ol > li {
+    list-style-type: upper-roman;
+  }
+  div.list > ol > li > ol > li {
+    list-style-type: lower-roman;
+  }
   div.textarea {
 	border:1px solid;
 	width: 80%;
