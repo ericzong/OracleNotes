@@ -34,11 +34,22 @@ Alter USER username
   <h1>删除</h1>
   <pre class="code">
 drop user &lt;user_name> cascade;   </pre>
+  <p>cascade 关键字不仅可以删除所有的用户对象，而且还可以删除其他用户模式中对已删除对象表进行引用的约束，使其他用户所拥有的引用了已删除对象的对象无效。</p>
 
   <h1>查询</h1>
   <pre class="code">
 SELECT * FROM DBA_USERS;
 SELECT * FROM ALL_USERS;
 SELECT * FROM USER_USERS; </pre>
+
+  <h1>权限</h1>
+  <pre class="code">
+<span class="notice">--赋予对象权限</span>
+grant object_privilege on object_name to username [with grant option];  
+<span class="notice">--删除对象权限</span>
+revoke object_privilege on object_name from username;
+<span class="notice">--赋予角色</span>
+grant role_name to user_name [with admin option];</pre>
+
 </body>
 </html>

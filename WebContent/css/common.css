@@ -34,6 +34,25 @@ body>p {
 	text-indent: 2em;
 }
 
+ul, ol, div, pre {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+  /* 紧临下行 */
+.next {
+	margin-top: 1em;
+	margin-bottom: 0;
+}
+  /* 紧临上行 */
+.last {
+	margin-top: 0;
+}
+
+body>div,pre {
+	margin-left: 2em;
+}
+
 div.textarea {
 	border: 1px solid;
 	width: 80%;
@@ -74,6 +93,12 @@ pre.code {
 	width: 80%;
 	padding: 5px;
 }
+  /* 无标记列表 */
+ol.none,ul.none {
+	margin: 0;
+	margin-left: 2em;
+	padding: 0;
+}
 
 /* 表格 */
 table {
@@ -86,13 +111,16 @@ table, th, td {
 }
 
 /* 编号 */
-/* 有序列表第一级列表项索引为大写罗马数字 */
+  /* 有序列表第一级列表项索引为大写罗马数字 */
 div.list>ol>li {
 	list-style-type: upper-roman;
 }
-/* 有序列表第二级列表项索引为小写罗马数字 */
+  /* 有序列表第二级列表项索引为小写罗马数字 */
 div.list>ol>li>ol>li {
 	list-style-type: lower-roman;
+}
+ol.none,ul.none li {
+	list-style-type: none;
 }
 
 body {
