@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Eric Zong">
+<title></title>
+<link type="text/css" rel="stylesheet" href="../css/common.css"  />
+<link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
+<link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<script type="text/javascript" src="../js/title.js"></script>
+</head>
+<body>
+  <h1>索引表</h1>
+  <p>PL/SQL 表，也称为索引表，是可以在 PL/SQL 例程中使用、能够模仿数组的非永久表。</p>
+  <p>索引算子是变量名称后面括号中的数值。（PL/SQL 表变量）</p>
+  <p>索引算子将会通知 PL/SQL 解析器。</p>
+  <p>在 PL/SQL 表变量上，count 方法用于计数。first 表示第一个索引，last 表示最后一个索引，next 表示下一个索引。</p>
+  
+  <h1>VARRAY 和 嵌套表</h1>
+  <p>在数据库表中存储对象集合，分别为 VARRAY 和嵌套表。</p>
+  <p>VARRAY 是能够在表列中存储的 PL/SQL 集合。</p>
+  <p>嵌套表和索引表、VARRAY 非常类似。</p>
+  
+  <p class="bold next">嵌套表 vs 索引表</p>
+  <p class="last">嵌套表可以存储在数据库的列中，而索引表不行。</p>
+  
+  <p class="bold next">嵌套表 vs VARRAY</p>
+  <ul>
+    <li>嵌套表是稀疏的，VARRAY 是密集的。可以删除嵌套表的单独记录，但是不能删除 VARRAY 中的单独记录。</li>
+    <li>嵌套表没有上限（超出了数据库表的常规上限），VARRAY 具有固定的大小。</li>
+    <li>嵌套表能够存储在系统生成表中，而 VARRAY 需要存储在内嵌或外延表空间中。</li>
+  </ul>
+  
+</body>
+</html>

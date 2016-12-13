@@ -30,7 +30,20 @@ type RECORD_NAME is record (
   ... );</pre>
   
   <h2>语句块</h2>
+  <p>条件是可以取值为 true、false 或 null 的表达式。如果条件取值为 null，将产生异常。</p>
   <p>程序块如果什么都不做可以用 null 关键字表示。在 PL/SQL 代码的可执行部分中，如无包括 null 关键字或其它可执行内容，则将会导致编译错误的发生。</p>
+  
+  <h1>控制</h1>
+  <h2>循环</h2>
+  <p>循环是一种程序控制结构，可以使用它来遍历一系列 PL/SQL 语句，并且在 0 次和无限次之间执行这些语句。</p>
+  <p>最基本的循环称为无限制循环。loop ... end loop</p>
+  <p>无限制是指如果没有 exit 语句，循环将一直运行下去。</p>
+  <p class="next">退出循环的方式：</p>
+  <ol class="last">
+    <li>通过判断来决定是否退出循环</li>
+    <li>使用 exit when 语句</li>
+  </ol>
+  <p>while 循环：while ... loop ... end loop</p>
   
   <h1>附录</h1>
   <p>查询 PL/SQL 和 SQL 中的保留字清单：help reserved words</p>
