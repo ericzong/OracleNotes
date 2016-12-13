@@ -11,6 +11,47 @@
 <script type="text/javascript" src="../js/title.js"></script>
 </head>
 <body>
+  <h1>概分类</h1>
+  
+  <p class="next">Oracle 中有两类权限：对象权限、系统权限。</p>
+  <dl class="last">
+    <dt>对象权限</dt>
+    <dd>由用户赋予的访问或操作数据库对象的权限。通常许可或限制 DDL 语句的执行。</dd>
+    <dt>系统权限</dt>
+    <dd>用来许可对各种特性的访问，或许可 Oracle 数据库中的特定任务的权限。通常许可或限制 DML 语句的执行。</dd>
+  </dl>
+  
+  <h1>权限的授予与撤消</h1>
+  
+  <h2>系统权限</h2>
+  <pre class="code">
+<span class="notice">--赋予系统权限</span>
+grant SYSTEM_PRIVILEGE to USERNAME [with admin option];
+<span class="notice">--撤消系统权限</span>
+revoke SYSTEM_PRIVILEGE from USERNAME;</pre>
+
+  <h2>对象权限</h2>
+  <pre class="code">
+<span class="notice">--赋予对象权限</span>
+grant OBJECT_PRIVILEGE on OBJECT_NAME to USERNAME [with grant option];
+<span class="notice">--撤消对象权限</span>
+revoke OBJECT_PRIVILEGE on OBJECT_NAME from USERNAME [cascade];</pre>
+
+  <h2>比较</h2>
+  <p>从上面的授权语句中可以看到 [with admin option] 和 [with grant option] 两个可选项，它们使被授权的用户有能力将被授予的权限再授予其它用户。
+  区别在于，前者作用于系统权限，而后者作用于对象权限。</p>
+  <p>对于系统权限而言，撤消系统权限的数据库用户不需要是最初授予系统权限的用户，只需要具有 admin option 系统权限即可。
+  而对于对象权限而言，只有授权者才能够撤消其为其它用户授予的权限。</p>
+  <p>对象权限只有授权者才能撤消，再加上如果授权时使用 [with grant option] 选项，那么其“授权路径”将形成树形结构，那么撤消某个节点的对象权限时，
+  应该级联撤消其所有子节点的对象权限，这就是 cascade 选项的作用。但是，系统权限不会级联撤消，只能直接撤消。</p>
+  <div class="ext">
+    注：使用 with admin 和 with grant 选项是危险的，如果没有严格的控制，可能导致安全方面的漏洞。
+  </div>
+  
+  <h1>应用开发的安全性</h1>
+  <p>默认情况下，PL/SQL 函数、过程、程序包都要使用“定义者”的命名空间和权限执行。这些已编译对象要使用直接赋予设计用户的权限执行，而不是通过数据库角色对象权限来执行。</p>
+  <p>应用开发的安全方法：不直接将表和视图上的权限赋予数据库用户，只能够通过 PL/SQL 过程、函数或程序包访问附属的表和视图，而执行这些已编译对象的权限要通过数据库角色提供。
+  最大的优点是：除了通过公开的方法之外，终端用户不能直接操作应用程序中的表和视图。</p>
   
 </body>
 </html>

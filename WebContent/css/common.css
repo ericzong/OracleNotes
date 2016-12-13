@@ -17,6 +17,10 @@ h3 {
 	font-size: 12px;
 }
 
+dt {
+	font-weight: bold;
+}
+
 .bold {
 	font-weight: bold;
 }
