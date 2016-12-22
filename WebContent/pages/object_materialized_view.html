@@ -37,5 +37,16 @@ create materialized view log on &lt;TABLE_NAME>
   <h1>删除日志</h1>
   <pre class="code">
 drop materialized view log on &lt;TABLE_NAME>;</pre>
+
+  <h1>能力</h1>
+  <p>Oracle 的 admin 目录下有文件 <a href="../files/utlxmv.sql" target="_blank">utlxmv.sql</a>，
+  用以创建记录物化视图能力的 mv_capabilities_table 表。</p>
+  <p>通过执行 DBMS_MVIEW.EXPLAIN_MVIEW 存储过程，就可以在 mv_capabilities_table 表中看到结果。</p>
+  <pre class="code">
+declare 
+begin
+  DBMS_MVIEW.EXPLAIN_MVIEW(MV, [stmt_id]);
+  commit;
+end;</pre>
 </body>
 </html>
