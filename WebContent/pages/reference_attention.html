@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Eric Zong">
+<title>注意事项</title>
+<link type="text/css" rel="stylesheet" href="../css/common.css"  />
+<link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
+<link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<script type="text/javascript" src="../js/title.js"></script>
+</head>
+<body>
+  <h1>关于标识符长度的限制</h1>
+  <p>标识符，指表、列、函数、存储过程等对象的名称，注意也包括程序中的变量、参数等名称，即囊括几乎所有名称。</p>
+  <p>在 Oracle 中，对标识符是有长度限制的：</p>
+  <div class="last textarea">
+    The Oracle database server limits both table and column names to <span class="notice">30 characters</span>。——《Oracle Database Gateway for IMS User's Guide》
+  </div>
+  <p>在各种文档或教程中都会提及“30个字符”的限制，但是在程序领域“字符”这个概念通常指的是英文字符。</p>
+  <p>严格来说，<span class="notice">标识符的长度限制是 30 个字节</span>。</p>
+  <p>这里的差别是，如果标识符使用的是中文（当然也可以是其它一些非欧美的语言），那么一个“自然语言中的字”通常占用不止一个字节。</p>
+  <p>以中文为例，如果标识符都是中文，而数据库使用 UFT-8 字符集，那么通常一个中文字占3个字节，即此时标识符最多可以是 10 个中文字。
+  否则，会出现“ORA-00972: Identifier is too long”异常。</p>
+  <p>该限制可以从 USER_TABLES、USER_TAB_COLUMNS、USER_CONSTRAINTS 等数据字典表相关字段长度得到印证。</p>
+</body>
+</html>
