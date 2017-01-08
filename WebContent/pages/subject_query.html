@@ -8,7 +8,11 @@
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
 <link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
+
 <script type="text/javascript" src="../js/title.js"></script>
+<script type="text/javascript" src="../js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
   <h1>复杂查询</h1>
@@ -50,64 +54,13 @@ end</pre>
       </li>
     </ol>
   </div>
-
-  <h1>多表查询</h1>
-  <p>连接查询的理论基础是笛卡尔积。所有连接运算的结果都是笛卡尔积的子集。</p>
-  <p>多表查询的连接条件：不能少于表的个数-1，如4张表的关联至少需要3个条件才能避免出现笛卡尔积。</p>
   
-  <h2>分类</h2>
-  <div class="tree">
-    <ul>
-      <li>
-        <a href="#">连接查询</a>
-        <ul>
-          <li>
-            <a href="#">内连接</a>
-            <ul>
-              <li><a href="#">等价内连接</a></li>
-              <li><a href="#">非等价内连接</a></li>
-            </ul>
-          </li>
-          <li>
-            <a href="#">外连接</a>
-            <ul>
-              <li><a href="#">左外连接</a></li>
-              <li><a href="#">右外连接</a></li>
-            </ul>
-          </li>
-          <li>
-            <a href="#">自连接</a>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </div>
-  
-  <h2>定义</h2>
-  <dl>
-    <dt title="Inner Join">内连接</dt>
-    <dd>???</dd>
-    <dt>等价内连接</dt>
-    <dd>在连接列相等的条件下执行的连接操作。</dd>
-    <dt>非等价内连接</dt>
-    <dd>在连接列不相等的条件下执行的连接操作。</dd>
-    <dt title="Outer Join">外连接</dt>
-    <dd>只用于两个表连接，限制其中一个表的行，而不限制另外一个表中的行。</dd>
-    <dt title="Left Outer Join">左外连接</dt>
-    <dd>???</dd>
-    <dt title="Right Outer Join">右外连接</dt>
-    <dd>???</dd>
-    <dt>自连接</dt>
-    <dd>把某一个表中的行同该表中另外一些行连接起来。</dd>
-  </dl>
-  
-  <h2>层次查询</h2>
+    <h2>层次查询</h2>
   <h3>语法</h3>
-  <pre class="code">
-select level, &lt;column_list>, &lt;expression_list> from &lt;table>
+  <pre class="code"><code class="sql">select level, &lt;column_list>, &lt;expression_list> from &lt;table_name>
   [where &lt;condition>]
   start with &lt;start_condition>
-  connect by prior &lt;prior_condition>;</pre>
+  connect by prior &lt;prior_condition>;</code></pre>
   <dl>
     <dt>level</dt>
     <dd>伪列，树层次</dd>
@@ -123,10 +76,9 @@ select level, &lt;column_list>, &lt;expression_list> from &lt;table>
     <dd>父子节点关系</dd>
   </dl>
   <p>例如：</p>
-  <pre class="code">
-select part_id, parent_id, part_name, mp_cost from bicycle
+  <pre class="code"><code class="sql">select part_id, parent_id, part_name, mp_cost from bicycle
   start with part_id = 1
-  connect by prior part_id = parent_id;</pre>
+  connect by prior part_id = parent_id;</code></pre>
   
   <h3>排序及过滤</h3>
   <p>在层次查询中，自底向上遍历只需要交换 connct by 中父子节点的位置。</p>
@@ -135,6 +87,86 @@ select part_id, parent_id, part_name, mp_cost from bicycle
     <li>过滤指定节点：在 where 子句中指定过滤该节点的条件</li>
     <li>过滤指定分支：在 connect by 子句中增加过滤条件</li>
   </ul>
+
+  <h1>多表查询</h1>
+  <p>连接查询的理论基础是笛卡尔积。所有连接运算的结果都是笛卡尔积的子集。</p>
+  <p>多表查询的连接条件：不能少于表的个数-1，如4张表的关联至少需要3个条件才能避免出现笛卡尔积。</p>
+  
+  <div class="tree">
+    <ul>
+      <li>
+        <a href="#">连接查询</a>
+        <ul>
+          <li>
+            <a href="#">交叉连接</a>
+          </li>
+          <li>
+            <a href="#">内连接</a>
+            <ul>
+              <li><a href="#">等值内连接</a></li>
+              <li><a href="#">非等值内连接</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#">外连接</a>
+            <ul>
+              <li><a href="#">左外连接</a></li>
+              <li><a href="#">右外连接</a></li>
+              <li><a href="#">全外连接</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#">自连接</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+  
+  <h2>交叉连接</h2>
+  <dl>
+    <dt title="Cross Join">交叉连接</dt>
+    <dd>也叫“笛卡尔积”，不带 ON 子句，返回两表的乘积。</dd>
+  </dl>
+  <p>分为隐式和显式两种，区别在于是否使用 CROSS JOIN。</p>
+  
+  <h2>内连接</h2>
+  <dl>
+      <dt title="Inner Join">内连接</dt>
+      <dd>返回连接表中符合连接条件和查询条件的数据行。（所谓的连接表就是数据库在做查询形成的中间表）。</dd>
+      <dt>等值内连接</dt>
+      <dd>连接运算符为相等的内连接。</dd>
+      <dt>非等值内连接</dt>
+      <dd>连接运算符为不相等的内连接。</dd>
+      <dt title="Natural Join">自然连接</dt>
+      <dd>连接列不用指定固定为两个表中同名且同数据类型的列的等值连接操作。如果列中有同名但不同数据类型的列，将返回一个错误。</dd>
+  </dl>
+  <p>内连接也有隐式和显式之分，区别在于是否使用 INNER JOIN，它们形成的中间表是不同的，隐式的中间表是笛卡尔积，而显式的经过 ON 子句过滤。</p>
+  <p class="next">对于内连接，可以使用 USING 子句简化连接查询，但是有 2 个条件：</p>
+  <ul>
+    <li>查询必须是等值连接</li>
+    <li>等值连接中的列必须具有相同的名称和数据类型</li>
+  </ul>
+  <pre class="code"><code class="sql">select emp.empno, emp.ename, emp.sal, dept.loc
+  from emp join dept <span class="notice">using(deptno)</span>;</code></pre>
+  
+  <h2>外连接</h2>
+  <dl>
+    <dt title="Outer Join">外连接</dt>
+    <dd>不但返回符合连接和查询条件的数据行，还返回不符合条件的一些行。</dd>
+    <dt title="Left Outer Join">左外连接</dt>
+    <dd>还返回左表中不符合连接条件单符合查询条件的数据行。</dd>
+    <dt title="Right Outer Join">右外连接</dt>
+    <dd>还返回右表中不符合连接条件单符合查询条件的数据行。</dd>
+    <dt title="Full Outer Join">全外连接</dt>
+    <dd>还返回左右表中不符合连接条件单符合查询条件的数据行。FULL = LEFT UNION RIGHT</dd>
+  </dl>
+  
+  <h2>自连接</h2>
+  <dl>
+    <dt>自连接</dt>
+    <dd>把某一个表中的行同该表中另外一些行连接起来。</dd>
+  </dl>
   
   <h1>子查询</h1>
   
@@ -174,22 +206,20 @@ select part_id, parent_id, part_name, mp_cost from bicycle
   
   <h2>多列子查询</h2>
   <p>多列子查询则是指返回多列数据的子查询语句。</p>
-  <pre class="code">select * from emp where (deptno,job)=(select deptno,job from emp where ename = 'Smith');</pre>
+  <pre class="code"><code class="sql">select * from emp where (deptno,job)=(select deptno,job from emp where ename = 'Smith');</code></pre>
   
   <h3>语法</h3>
   <p>多列子查询语法</p>
-  <pre class="code">
-select &lt;column_list> from &lt;table>
+  <pre class="code"><code class="sql">select &lt;column_list> from &lt;table>
   where &lt;condition_column_list> in (
     select &lt;sub_column_list> from &lt;sub_table>
       where &lt;sub_condition>
-  );  </pre>
+  );  </code></pre>
   <p>多列子查询更新语法</p>
-  <pre class="code">
-update table set (&lt;column_list>) = (
+  <pre class="code"><code class="sql">update table set (&lt;column_list>) = (
   select &lt;column_list> from table
     where &lt;condition>
-);  </pre>
+);  </code></pre>
   
   <h3>单行比较 vs. 多行比较</h3>
   <p>当多列子查询返回单行数据时，在where子句中可以使用单行比较符。（=，!=，...）</p>
@@ -201,13 +231,12 @@ update table set (&lt;column_list>) = (
     <dt>非成对比较</dt>
     <dd>即使不是成对相等，也可以称为满足匹配的条件。</dd>
   </dl>
-  <pre class="code">
-<span class="comment">--成对比较示例</span>
-SELECT ename, sal, comm, deptno FROM emp
-  WHERE (sal, nvl(comm, -1)) IN (SELECT sal, nvl(comm, -1) FROM emp WHERE deptno=30);
+  <pre class="code"><span class="comment">--成对比较示例</span>
+<code class="sql">SELECT ename, sal, comm, deptno FROM emp
+  WHERE (sal, nvl(comm, -1)) IN (SELECT sal, nvl(comm, -1) FROM emp WHERE deptno=30);</code>
 <span class="comment">--非成对比较示例</span>
-SELECT ename, sal, comm, deptno FROM emp
-  WHERE sal IN (SELECT sal FROM emp WHERE deptno=30) AND nvl(comm, -1) IN (SELECT nvl(comm, -1) FROM emp WHERE deptno=30);</pre>  
+<code class="sql">SELECT ename, sal, comm, deptno FROM emp
+  WHERE sal IN (SELECT sal FROM emp WHERE deptno=30) AND nvl(comm, -1) IN (SELECT nvl(comm, -1) FROM emp WHERE deptno=30);</code></pre>  
   
   <h2>注意</h2>
   <p>内查询的结果是空值，外查询的条件始终不会成立。</p>
@@ -223,8 +252,7 @@ SELECT ename, sal, comm, deptno FROM emp
   
   <h2>表达式排序</h2>
   <p>除了直接指定列名排序外，还可依据表达式对数据排序。</p>
-  <pre class="code">
-select * from emp order by sal*12 desc;</pre>
+  <pre class="code"><code class="code">select * from emp order by sal*12 desc;</code></pre>
 
   <h2>别名排序</h2>
   <p>排序操作可使用别名。若在 select 语句中定义了列的别名，那么该列名可以使用在 order by 子句中，对于包含了表达式的排序来说，
@@ -232,13 +260,11 @@ select * from emp order by sal*12 desc;</pre>
   
   <h2>数字序号排序</h2>
   <p>排序操作可使用数字序号代替列名称。数字序号代表列名称由 select 子句后面的列名顺序决定。</p>
-  <pre class="code">
-select ename, job, hiredate, sal from emp
-  order by hiredate, sal desc;
+  <pre class="code"><code class="sql">select ename, job, hiredate, sal from emp
+  order by hiredate, sal desc;</code>
 等价于：
-select ename, job, hiredate, sal from emp
-  order by 3 sal desc;
-  </pre>
+<code class="sql">select ename, job, hiredate, sal from emp
+  order by 3 sal desc;</code></pre>
   
   <h1>集合运算</h1>
   <dl>
@@ -255,9 +281,8 @@ select ename, job, hiredate, sal from emp
   <h1>附录</h1>
   <h2>转义</h2>
   <p>escape 子句可把“_”和“%”从特殊标志返回到普通字符。escape 子句用来指定一个退出符号，该退出符号后面的字符被作为普通字符对待。</p>
-  <pre class="code">
-select ... from ...
-  where ... like 'A<span class="notice">\</span>%' escape '<span class="notice">\</span>';</pre>
+  <pre class="code"><code class="sql">select ... from ...
+  where ... like 'A\%' escape '\';</code></pre>
   
   <h2>其它</h2>
   <p>between...and... 包含边界值。</p>

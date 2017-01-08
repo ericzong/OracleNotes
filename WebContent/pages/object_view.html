@@ -18,26 +18,26 @@
     <li>物化视图</li>
   </ul>
   
-  <h1>关系视图</h1>
-  <h2>创建</h2>
+  <h2>关系视图</h2>
+  <h3>创建</h3>
   <pre class="code">
 CREATE [OR REPLACE] [FORCE|NOFORCE] VIEW &lt;VIEW_NAME>[(ALIAS1，ALIAS2...)]
   AS &lt;SUBQUERY>
   [WITH CHECK OPTION [CONSTRAINT &lt;CONSTRAINT_NAME>]]
   [WITH READ ONLY];</pre>
   
-  <h2>编译</h2>
+  <h3>编译</h3>
   <pre class="code">
 alter view &lt;VIEW_NAME> compile;</pre>
 
-  <h2>查询</h2>
+  <h3>查询</h3>
   <pre class="code">
 select * from user_views;
 select * from all_views;
 select * from dba_views;</pre>
   
-  <h1>内嵌视图</h1>
-  <h2>更新</h2>
+  <h2>内嵌视图</h2>
+  <h3>更新</h3>
   <pre class="code">
 <span class="comment">--内嵌视图更新表数据</span>
 UPDATE 
@@ -45,8 +45,9 @@ UPDATE
        FROM EMPLOYEES
   )
 SET SALARY = SALARY + 300;</pre>
-  <h1>对象视图</h1>
-  <h2>创建</h2>
+
+  <h2>对象视图</h2>
+  <h3>创建</h3>
   <pre class="code">
 CREATE TYPE TypeName IS OBJECT({ColumnDefinition});
 
@@ -56,8 +57,27 @@ CREATE OR REPLACE VIEW ViewName
     SELECT … FROM TableName;
 </pre>
   
-  <h1>物化视图</h1>
+  <h2>物化视图</h2>
   
+  <h1>只读的视图</h1>
+  <p>即使是视图，也是可能对其进行更新操作的。但是，有时我们可能不希望由于更新使某些记录从视图中“消失”，或者我们完全不希望视图被更新。
+  这时，我们需要分别定义视图为“查询条件只读视图”或“只读视图”。</p>
+  
+  <h2>查询条件只读</h2>
+  <p>使用 with check option 子句限定查询条件只读，这将不能对所定义视图的查询条件列进行更新操作。</p>
+  <p class="next">如定义如下视图：</p>
+  <pre class="code">
+create view empv as 
+  select * from test_emp where deptno=20
+    <span class="notice">with check option</span>;</pre>
+  <p class="next">则不能执行以下更新语句：</p>
+  <pre class="code">
+update empv set deptno=30 where empno=7369;</pre>
+  <p>否则，会报错误“ORA-01402：视图 WITH CHECK OPTION where 子句违规”。</p>
+  
+  <h2>视图只读</h2>
+  <p>使用 with read only 子句限定视图只读，这将不能对所定义视图的任意列进行更新操作。
+  否则，会报错误“ORA-01733：此处不允许虚拟列”。</p>
 
 </body>
 </html>
