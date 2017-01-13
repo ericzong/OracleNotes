@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Eric Zong">
+<title>正则表达式</title>
+<link type="text/css" rel="stylesheet" href="../css/common.css"  />
+<link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
+<link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
+
+<script type="text/javascript" src="../js/title.js"></script>
+<script type="text/javascript" src="../js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+  <h1>元符号</h1>
+  <table>
+    <tbody>
+      <tr>
+        <td>*</td>
+        <td>匹配0个或多个任意字符</td>
+      </tr>
+      <tr>
+        <td>?</td>
+        <td>匹配1个任意字符</td>
+      </tr>
+      <tr>
+        <td>^</td>
+        <td>表示字符串的开始</td>
+      </tr>
+      <tr>
+        <td>$</td>
+        <td>表示字符串的结束</td>
+      </tr>
+      <tr>
+        <td>[]</td>
+        <td>匹配方括号中的任意一个字符</td>
+      </tr>
+      <tr>
+        <td>{m}</td>
+        <td>允许匹配m次</td>
+      </tr>
+      <tr>
+        <td>{m,n}</td>
+        <td>至少匹配m次，最多匹配n次</td>
+      </tr>
+      <tr>
+        <td>\n</td>
+        <td>表示前一个表达式重复n次</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h1>正则表达式函数</h1>
+  <table>
+    <tbody>
+      <tr>
+        <td>regexp_like</td>
+        <td>可以使用正则表达式执行模式匹配操作</td>
+      </tr>
+      <tr>
+        <td>regexp_instr</td>
+        <td>搜索匹配正则表达式模式的输入字符串</td>
+      </tr>
+      <tr>
+        <td>regexp_replace</td>
+        <td>搜索符合正则表达式模式的输入字符串并用替换字符串代替</td>
+      </tr>
+      <tr>
+        <td>regexp_substr</td>
+        <td>搜索符合正则表达式模式的输入字符串输出搜索到的字符串</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h2>regexp_like</h2>
+  <pre class="code">regexp_like(search_string, pattern [, match_option])</pre>
+  <ul>
+    <li>search_string 	搜索值</li>
+    <li>pattern 正则表达式，512字节内</li>
+    <li>match_option 匹配行为</li>
+  </ul>
+  <table>
+    <caption>match_option选项值</caption>
+    <tbody>
+      <tr>
+        <td>C</td>
+        <td>匹配时，大小写敏感。默认设置</td>
+      </tr>
+      <tr>
+        <td>I</td>
+        <td>匹配时，大小写不敏感</td>
+      </tr>
+      <tr>
+        <td>N</td>
+        <td>允许使用圆点(.)匹配任何新增的字符</td>
+      </tr>
+      <tr>
+        <td>M</td>
+        <td>允许将源字符串作为多个字符串对待，^开始~$结束</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="next">示例：</p>
+  <pre class="code"><code>select * from jobs where regexp_like(job_title,'^S');</code></pre>
+  <p>结果：</p>
+  <pre class="code">
+JOB_ID     JOB_TITLE       			MIN_SALARY MAX_SALARY
+---------- ----------------------------------- ---------- ----------
+SA_MAN		Sales Manager 			10000 		20000
+SA_REP		Sales Representative		6000		12000
+ST_MAN		Stock Manager			5500		8500
+ST_CLERK	Stock Clerk			2000		5000
+SH_CLERK	Shipping Clerk			2500		5500</pre>
+  
+  <h2>regexp_instr</h2>
+  <pre class="code">regexp_instr(search_string, pattern [, position [, occurrence [, return_option [, match_option]]]])</pre>
+  <ul>
+    <li>position 搜索开始位置的正整数（默认为1）</li>
+    <li>occurrence 	将要搜索模式的发生次数，默认1，表示将要搜索第一次发生时的值</li>
+    <li>return_option	该函数应该返回的值，0表示开始匹配位置，非0表示匹配结束位置</li>
+  </ul>
+  <p class="next">示例：</p>
+  <pre class="code"><code>select * from jobs where regexp_instr(job_title,'M',1,2,0)>0;</code></pre>
+  <p>结果：</p>
+  <pre class="code">
+JOB_ID     JOB_TITLE                     MIN_SALARY 	MAX_SALARY
+---------- ----------------------------------- 	---------- 	----------
+MK_MAN    Marketing Manager           9000      	15000</pre>
+<p>注释：搜索字符M在job_title中第二次出现的字符串。</p>
+  
+  <h2>regexp_replace</h2>
+  <pre class="code">regexp_replace(search_string,pattern [, replacestr [, position [, occurrence [, match_option]]]])</pre>
+  <ul>
+    <li>replacestr  替换字符串</li>
+  </ul>
+  <p class="next">示例：</p>
+  <pre class="code"><code>select regexp_replace('I am a student','student$','teacher') from dual;</code></pre>
+  <p>结果：</p>
+  <pre class="code">
+REGEXP_REPLACE
+--------------
+I am a teacher</pre>
+  
+  <h2>regexp_substr</h2>
+  <pre class="code">regexp_substr(search_string, pattern[, position[, occurrence[, match_option]]])</pre>
+  <p class="next">示例：</p>
+  <pre class="code"><code>select job_title,
+  regexp_substr(job_title,'[a-h]',1,2) reg_job_title
+  from jobs
+  where regexp_instr(job_title,'a',1,3)>0;</code></pre>
+  <p>结果：</p>
+  <pre class="code">
+JOB_TITLE                           REG_JOB_TITLE
+----------------------------------- ---------------
+Finance Manager                     	c
+Sales Manager                       	e
+Purchasing Manager                  	h
+Marketing Manager                  	e</pre>
+
+</body>
+</html>
