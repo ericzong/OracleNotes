@@ -38,6 +38,10 @@ dt {
 	text-decoration: line-through;
 }
 
+a.normal {
+  text-decoration: none;
+}
+
 /* 排版 */
 body {
 	min-width: 1000px;
