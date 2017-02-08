@@ -1,25 +1,8 @@
 @CHARSET "UTF-8";
-/* 打印样式 */
+/* -------------------- 打印样式 -------------------- */
 
-/* 页面设置 */
-@page {
-	size: A4 portrait; /* portrait | landscape */
-}
-
-@page :right {
-	@bottom-right {
-		content: counter(page)/counter(pages);
-	}
-}
-
-@page :left {
-	@bottom-left {
-		content: counter(page)/counter(pages);
-	}
-}
-
-/* 显示设置 */
-nav, aside {
+/* 导航栏：隐藏 */
+#sideBar {
 	display: none;
 }
 
@@ -28,36 +11,36 @@ hr {
 }
 
 body {
+	min-width: 400px;
 	color: #000;
 	background: #fff;
 	margin: 0;
 	padding: 0;
-	width: 100%;
+	/* 分栏 */
+	column-count:2;
+	-moz-column-count: 1; 	/* Firefox */
+	-webkit-column-count: 2; /* Safari 和 Chrome */
 }
 
 img {
 	max-width: 100% !important;
 }
 
-/* 分段设置 */
-h1, h2, h3, pre {
+/* 分页 */
+h1, h2, h3 {
 	page-break-after: avoid;
 }
 
-ul, img, pre, table {
+ul, img, pre, table, div, pre {
 	page-break-inside: avoid;
 }
 
-article {
-	page-break-before: always;
-}
-
 /* 超链接设置 */
-article a {
+a {
 	font-weight: bolder;
 	text-decoration: none;
 }
 
-article a[href^=http]:after {
-	content: " <" attr(href) "> ";
+a[href^=http]:after {
+	content: " (" attr(href) ")";
 }
