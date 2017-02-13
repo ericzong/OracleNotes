@@ -88,7 +88,7 @@ div.ext {
 	padding: 5px;
 }
 
-div.ext ul, ol {
+div.ext ul, div.ext ol {
 	margin: 0;
 	margin-left: 2em;
 	padding: 0;
