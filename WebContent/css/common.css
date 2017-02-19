@@ -51,11 +51,6 @@ body>p {
 	text-indent: 2em;
 }
 
-ul, ol, div, pre {
-	margin-top: 5px;
-	margin-bottom: 5px;
-}
-
   /* 紧临下行 */
 .next {
 	margin-bottom: 0;
@@ -88,13 +83,23 @@ div.ext {
 	padding: 5px;
 }
 
-div.ext ul, div.ext ol {
+div.ext ul {
 	margin: 0;
 	margin-left: 2em;
 	padding: 0;
 }
 
-div.ext li, p {
+div.ext ol {
+	margin: 0;
+	margin-left: 2em;
+	padding: 0;
+}
+
+div.ext li {
+	margin: 0;
+}
+
+div.ext p {
 	margin: 0;
 }
 
@@ -115,8 +120,14 @@ pre.code>code {
   padding: 0;
 }
 
-  /* 无标记列表 */
-ol.none,ul.none {
+/* 无标记列表 */
+ol.none {
+	margin: 0;
+	margin-left: 2em;
+	padding: 0;
+}
+
+ul.none {
 	margin: 0;
 	margin-left: 2em;
 	padding: 0;
@@ -137,6 +148,10 @@ caption {
 table, th, td {
 	border: 1px solid;
 	padding: 5px;
+}
+
+td {
+	vertical-align: top;
 }
 
 /* 编号 */
