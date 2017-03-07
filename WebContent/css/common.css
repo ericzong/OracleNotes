@@ -42,6 +42,14 @@ a.normal {
   text-decoration: none;
 }
 
+table.invisible {
+  border: 0;
+}
+
+table.invisible td {
+  border: 0;
+}
+
 /* 排版 */
 body {
 	min-width: 1000px;
