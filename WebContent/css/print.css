@@ -1,6 +1,17 @@
 @CHARSET "UTF-8";
 /* -------------------- 打印样式 -------------------- */
 
+/* 排版 */
+h1, h2, h3 {
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+p, ul, ol {
+	margin-top: 1px;
+	margin-bottom: 1px;
+}
+
 /* 导航栏：隐藏 */
 #sideBar {
 	display: none;
@@ -39,8 +50,9 @@ ul, img, pre, table, div, pre {
 a {
 	font-weight: bolder;
 	text-decoration: none;
+	white-space: nowrap;
 }
 
 a[href^=http]:after {
-	content: " (" attr(href) ")";
+	content: "(" attr(href) ")";
 }
