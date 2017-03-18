@@ -7,6 +7,8 @@
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
 
 <script type="text/javascript" src="../js/title.js"></script>
 <script type="text/javascript" src="../js/highlight.pack.js"></script>
@@ -15,21 +17,26 @@
 <body>
   <h1>创建/修改</h1>
   <pre class="code">
-CREATE [OR REPLACE]
-  FUNCTION FunctionName(Parameters)
-  RETURN Type
-  [DETERMINISTIC] AS
-  BEGIN
+    <code>
+create [or replace]
+  function function_name(parameters)
+  return type
+  [deterministic] as
+  begin
     …
-  END FunctionName;
-</pre>
+  end function_name;
+    </code>
+  </pre>
 
   <h1>查询</h1>
   <pre class="code">
-SELECT * FROM USER_OBJECTS;
-SELECT * FROM ALL_OBJECTS;
-SELECT * FROM DBA_OBJECTS;
+    <code>
+select * from user_objects;
+select * from all_objects;
+select * from dba_objects;
 
-SELECT * FROM USER_SOURCE;</pre>
+select * from user_source;
+    </code>
+  </pre>
 </body>
 </html>

@@ -7,6 +7,8 @@
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
 
 <script type="text/javascript" src="../js/title.js"></script>
 <script type="text/javascript" src="../js/highlight.pack.js"></script>
@@ -15,57 +17,84 @@
 <body>
   <h1>创建</h1>
   <pre class="code">
-create temporary tablespace test_temp
-  tempfile &lt;tempfile_path>
-  size &lt;file_size>
-  autoextend on
-  next &lt;next_size> maxsize &lt;max_size>
-  extent management local;
-
-create tablespace test_data
+    <code>
+--创建表空间
+create tablespace &lt;tablespace_name>
   datafile &lt;datafile_path>
   size &lt;file_size>
   autoextend on
   next &lt;next_size> maxsize [&lt;max_size> | unlimited]
   extent management local;
-</pre>
+
+--创建临时表空间
+create temporary tablespace &lt;tablespace_name>
+  tempfile &lt;tempfile_path>
+  size &lt;file_size>
+  autoextend on
+  next &lt;next_size> maxsize &lt;max_size>
+  extent management local;
+  
+--创建 UNDO 表空间
+create undo tablespace &lt;tablespace_name>
+  datafile &lt;datafile_path>
+  size &lt;file_size>
+  autoextend on
+  next &lt;next_size> maxsize [&lt;max_size> | unlimited]
+  extent management local;
+    </code>
+  </pre>
 
   <h1>删除</h1>
   <pre class="code">
-drop tablespace &lt;tablespace_name> including contents and datafiles;</pre>
+    <code>
+drop tablespace &lt;tablespace_name> including contents and datafiles;
+    </code>
+  </pre>
 
   <h1>修改</h1>
   <pre class="code">
-<span class="comment">--修改默认表空间</span>
-alter user &lt;user_name> default tablespace &lt;tablespace_name>;
+    <code>
+--修改默认表空间
+alter [user &lt;user_name>|database] default tablespace &lt;tablespace_name>;
+alter [user &lt;user_name>|database] default temporary tablespace &lt;tablespace_name>;
 
-<span class="comment">--修改表空间名称</span>
+--修改表空间名称
 alter tablespace &lt;tablespace_name> rename to &lt;new_tablespace_name>;
 
+--修改表空间数据文件配置
 alter database datafile &lt;datafile_path>
   autoextend on next &lt;next_size> maxsize [&lt;max_size> | unlimited];
   
+--修改表空间数据文件大小
+alter datafile &lt;file_path> resize &lt;size>;
+alter database tempfile &lt;tempfile_path> resize &lt;size>;
+  
+--增加表空间对应的数据文件
 alter tablespace &lt;tablespace_name> add datafile &lt;file_path> size &lt;size>
   autoextend on next &lt;extend_size>;
 
 alter tablespace &lt;tablespace_name> [online | offline];
 
-alter tablespace &lt;tablespace_name> [read only | write];  </pre>
+alter tablespace &lt;tablespace_name> [read only | write];  
+    </code>
+  </pre>
 
   <h1>查询</h1>
   <pre class="code">
-<span class="comment">--查询默认表空间</span>
+    <code>
+--查询默认表空间
 select username, default_tablespace from dba_users;
 
-<span class="comment">--查询个表空间文件信息</span>
+--查询个表空间文件信息
 select file_name, tablespace_name, bytes from dba_data_files;
 
-<span class="comment">--查询表空间包含的对象</span>
+--查询表空间包含的对象
 select t.owner, t.segment_name, sum(bytes) / 1024 / 1024
   from dba_segments t
  where t.tablespace_name = &lt;tablespace_name>
  group by t.owner, t.segment_name
  order by sum(bytes) desc;
+     </code>
   </pre>
 </body>
 </html>

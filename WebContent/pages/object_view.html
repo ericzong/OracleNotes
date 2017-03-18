@@ -7,6 +7,8 @@
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
 
 <script type="text/javascript" src="../js/title.js"></script>
 <script type="text/javascript" src="../js/highlight.pack.js"></script>
@@ -24,41 +26,55 @@
   <h2>关系视图</h2>
   <h3>创建</h3>
   <pre class="code">
-CREATE [OR REPLACE] [FORCE|NOFORCE] VIEW &lt;VIEW_NAME>[(ALIAS1，ALIAS2...)]
-  AS &lt;SUBQUERY>
-  [WITH CHECK OPTION [CONSTRAINT &lt;CONSTRAINT_NAME>]]
-  [WITH READ ONLY];</pre>
+    <code>
+create [or replace] [force|noforce] view &lt;view_name>[(alias1，alias2...)]
+  as &lt;subquery>
+  [with check option [constraint &lt;constraint_name>]]
+  [with read only];
+    </code>
+  </pre>
   
   <h3>编译</h3>
   <pre class="code">
-alter view &lt;VIEW_NAME> compile;</pre>
+    <code>
+alter view &lt;view_name> compile;
+    </code>
+  </pre>
 
   <h3>查询</h3>
   <pre class="code">
+    <code>
 select * from user_views;
 select * from all_views;
-select * from dba_views;</pre>
+select * from dba_views;
+    </code>
+  </pre>
   
   <h2>内嵌视图</h2>
   <h3>更新</h3>
   <pre class="code">
-<span class="comment">--内嵌视图更新表数据</span>
-UPDATE 
-  (SELECT SALARY
-       FROM EMPLOYEES
+    <code>
+--内嵌视图更新表数据
+update 
+  (select salary
+       from employees
   )
-SET SALARY = SALARY + 300;</pre>
+set salary = salary + 300;
+    </code>
+  </pre>
 
   <h2>对象视图</h2>
   <h3>创建</h3>
   <pre class="code">
+    <code>
 CREATE TYPE TypeName IS OBJECT({ColumnDefinition});
 
 CREATE OR REPLACE VIEW ViewName
   OF ObjectName
   WITH OBJECT OID(ObjectColumnName) AS
     SELECT … FROM TableName;
-</pre>
+    </code>
+  </pre>
   
   <h2>物化视图</h2>
   
@@ -70,12 +86,18 @@ CREATE OR REPLACE VIEW ViewName
   <p>使用 with check option 子句限定查询条件只读，这将不能对所定义视图的查询条件列进行更新操作。</p>
   <p class="next">如定义如下视图：</p>
   <pre class="code">
+    <code>
 create view empv as 
   select * from test_emp where deptno=20
-    <span class="notice">with check option</span>;</pre>
+    with check option;
+    </code>
+  </pre>
   <p class="next">则不能执行以下更新语句：</p>
   <pre class="code">
-update empv set deptno=30 where empno=7369;</pre>
+    <code>
+update empv set deptno=30 where empno=7369;
+    </code>
+  </pre>
   <p>否则，会报错误“ORA-01402：视图 WITH CHECK OPTION where 子句违规”。</p>
   
   <h2>视图只读</h2>

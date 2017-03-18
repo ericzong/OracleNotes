@@ -57,10 +57,14 @@ end</pre>
   
     <h2>层次查询</h2>
   <h3>语法</h3>
-  <pre class="code"><code class="sql">select level, &lt;column_list>, &lt;expression_list> from &lt;table_name>
+  <pre class="code">
+    <code class="sql">
+select level, &lt;column_list>, &lt;expression_list> from &lt;table_name>
   [where &lt;condition>]
   start with &lt;start_condition>
-  connect by prior &lt;prior_condition>;</code></pre>
+  connect by prior &lt;prior_condition>;
+    </code>
+  </pre>
   <dl>
     <dt>level</dt>
     <dd>伪列，树层次</dd>
@@ -76,9 +80,13 @@ end</pre>
     <dd>父子节点关系</dd>
   </dl>
   <p>例如：</p>
-  <pre class="code"><code class="sql">select part_id, parent_id, part_name, mp_cost from bicycle
+  <pre class="code">
+    <code class="sql">
+select part_id, parent_id, part_name, mp_cost from bicycle
   start with part_id = 1
-  connect by prior part_id = parent_id;</code></pre>
+  connect by prior part_id = parent_id;
+    </code>
+  </pre>
   
   <h3>排序及过滤</h3>
   <p>在层次查询中，自底向上遍历只需要交换 connct by 中父子节点的位置。</p>
@@ -147,8 +155,12 @@ end</pre>
     <li>查询必须是等值连接</li>
     <li>等值连接中的列必须具有相同的名称和数据类型</li>
   </ul>
-  <pre class="code"><code class="sql">select emp.empno, emp.ename, emp.sal, dept.loc
-  from emp join dept <span class="notice">using(deptno)</span>;</code></pre>
+  <pre class="code">
+    <code class="sql">
+select emp.empno, emp.ename, emp.sal, dept.loc
+  from emp join dept <span class="notice">using(deptno)</span>;
+    </code>
+  </pre>
   
   <h2>外连接</h2>
   <dl>
@@ -206,20 +218,32 @@ end</pre>
   
   <h2>多列子查询</h2>
   <p>多列子查询则是指返回多列数据的子查询语句。</p>
-  <pre class="code"><code class="sql">select * from emp where (deptno,job)=(select deptno,job from emp where ename = 'Smith');</code></pre>
+  <pre class="code">
+    <code class="sql">
+select * from emp where (deptno,job)=(select deptno,job from emp where ename = 'Smith');
+    </code>
+  </pre>
   
   <h3>语法</h3>
   <p>多列子查询语法</p>
-  <pre class="code"><code class="sql">select &lt;column_list> from &lt;table>
+  <pre class="code">
+    <code class="sql">
+select &lt;column_list> from &lt;table>
   where &lt;condition_column_list> in (
     select &lt;sub_column_list> from &lt;sub_table>
       where &lt;sub_condition>
-  );  </code></pre>
+  );  
+    </code>
+  </pre>
   <p>多列子查询更新语法</p>
-  <pre class="code"><code class="sql">update table set (&lt;column_list>) = (
+  <pre class="code">
+    <code class="sql">
+update table set (&lt;column_list>) = (
   select &lt;column_list> from table
     where &lt;condition>
-);  </code></pre>
+);  
+    </code>
+  </pre>
   
   <h3>单行比较 vs. 多行比较</h3>
   <p>当多列子查询返回单行数据时，在where子句中可以使用单行比较符。（=，!=，...）</p>
@@ -231,12 +255,16 @@ end</pre>
     <dt>非成对比较</dt>
     <dd>即使不是成对相等，也可以称为满足匹配的条件。</dd>
   </dl>
-  <pre class="code"><span class="comment">--成对比较示例</span>
-<code class="sql">SELECT ename, sal, comm, deptno FROM emp
-  WHERE (sal, nvl(comm, -1)) IN (SELECT sal, nvl(comm, -1) FROM emp WHERE deptno=30);</code>
-<span class="comment">--非成对比较示例</span>
-<code class="sql">SELECT ename, sal, comm, deptno FROM emp
-  WHERE sal IN (SELECT sal FROM emp WHERE deptno=30) AND nvl(comm, -1) IN (SELECT nvl(comm, -1) FROM emp WHERE deptno=30);</code></pre>  
+  <pre class="code">
+    <code class="sql">
+--成对比较示例
+SELECT ename, sal, comm, deptno FROM emp
+  WHERE (sal, nvl(comm, -1)) IN (SELECT sal, nvl(comm, -1) FROM emp WHERE deptno=30);
+--非成对比较示例
+SELECT ename, sal, comm, deptno FROM emp
+  WHERE sal IN (SELECT sal FROM emp WHERE deptno=30) AND nvl(comm, -1) IN (SELECT nvl(comm, -1) FROM emp WHERE deptno=30);
+    </code>
+  </pre>  
   
   <h2>注意</h2>
   <p>内查询的结果是空值，外查询的条件始终不会成立。</p>
@@ -252,7 +280,11 @@ end</pre>
   
   <h2>表达式排序</h2>
   <p>除了直接指定列名排序外，还可依据表达式对数据排序。</p>
-  <pre class="code"><code class="code">select * from emp order by sal*12 desc;</code></pre>
+  <pre class="code">
+    <code class="code">
+select * from emp order by sal*12 desc;
+    </code>
+  </pre>
 
   <h2>别名排序</h2>
   <p>排序操作可使用别名。若在 select 语句中定义了列的别名，那么该列名可以使用在 order by 子句中，对于包含了表达式的排序来说，
@@ -260,11 +292,15 @@ end</pre>
   
   <h2>数字序号排序</h2>
   <p>排序操作可使用数字序号代替列名称。数字序号代表列名称由 select 子句后面的列名顺序决定。</p>
-  <pre class="code"><code class="sql">select ename, job, hiredate, sal from emp
-  order by hiredate, sal desc;</code>
+  <pre class="code">
+    <code class="sql">
+select ename, job, hiredate, sal from emp
+  order by hiredate, sal desc;
 等价于：
-<code class="sql">select ename, job, hiredate, sal from emp
-  order by 3 sal desc;</code></pre>
+select ename, job, hiredate, sal from emp
+  order by 3 sal desc;
+    </code>
+  </pre>
   
   <h1>集合运算</h1>
   <dl>
@@ -281,8 +317,12 @@ end</pre>
   <h1>附录</h1>
   <h2>转义</h2>
   <p>escape 子句可把“_”和“%”从特殊标志返回到普通字符。escape 子句用来指定一个退出符号，该退出符号后面的字符被作为普通字符对待。</p>
-  <pre class="code"><code class="sql">select ... from ...
-  where ... like 'A\%' escape '\';</code></pre>
+  <pre class="code">
+    <code class="sql">
+select ... from ...
+  where ... like 'A\%' escape '\';
+    </code>
+  </pre>
   
   <h2>其它</h2>
   <p>between...and... 包含边界值。</p>

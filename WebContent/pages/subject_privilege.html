@@ -28,17 +28,23 @@
   
   <h2>系统权限</h2>
   <pre class="code">
-<span class="notice">--赋予系统权限</span>
+    <code>
+--赋予系统权限
 grant SYSTEM_PRIVILEGE to USERNAME [with admin option];
-<span class="notice">--撤消系统权限</span>
-revoke SYSTEM_PRIVILEGE from USERNAME;</pre>
+--撤消系统权限
+revoke SYSTEM_PRIVILEGE from USERNAME;
+    </code>
+  </pre>
 
   <h2>对象权限</h2>
   <pre class="code">
-<span class="notice">--赋予对象权限</span>
+    <code>
+--赋予对象权限
 grant OBJECT_PRIVILEGE on OBJECT_NAME to USERNAME [with grant option];
-<span class="notice">--撤消对象权限</span>
-revoke OBJECT_PRIVILEGE on OBJECT_NAME from USERNAME [cascade];</pre>
+--撤消对象权限
+revoke OBJECT_PRIVILEGE on OBJECT_NAME from USERNAME [cascade];
+    </code>
+  </pre>
 
   <h2>比较</h2>
   <p>从上面的授权语句中可以看到 [with admin option] 和 [with grant option] 两个可选项，它们使被授权的用户有能力将被授予的权限再授予其它用户。

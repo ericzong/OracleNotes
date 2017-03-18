@@ -7,6 +7,8 @@
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
 
 <script type="text/javascript" src="../js/title.js"></script>
 <script type="text/javascript" src="../js/highlight.pack.js"></script>
@@ -15,43 +17,62 @@
 <body>
   <h1>参数信息</h1>
   <pre class="code">
-SELECT * FROM V$DATABASE;
-SELECT * FROM V$INSTANCE;
-SELECT * FROM V$NLS_PARAMETERS;</pre>
+    <code>
+select * from v$database;
+select * from v$instance;
+select * from v$nls_parameters;
+    </code>
+  </pre>
 
   <h1>普通查询</h1>
   <pre class="code">
-SELECT * FROM USER_OBJECTS;
-SELECT * FROM ALL_OBJECTS;
-SELECT * FROM DBA_OBJECTS;
+    <code>
+select * from user_objects;
+select * from all_objects;
+select * from dba_objects;
   
-SELECT * FROM USER_RECYCLEBIN;
-SELECT * FROM RECYCLEBIN;
-SELECT * FROM DBA_RECYCLEBIN;</pre>
+select * from user_recyclebin;
+select * from recyclebin;
+select * from dba_recyclebin;
+    </code>
+  </pre>
 
   <h1>清除</h1>
   <pre class="code">
-PURGE INDEX &lt;INDEX_NAME>;
-<span class="comment">--一般用户清除自己的回收站</span>
-PURGE RECYCLEBIN;
-<span class="comment">--DBA清除任何表空间中的回收站</span>
-PURGE DBA_RECYCLEBIN;
-<span class="comment">--清除指定表空间回收站</span>
-PURGE TABLESPACE &lt;TS_NAME>;
-<span class="comment">--清除指定表空间中指定用户的回收站</span>
-PURGE TABLESPACE &lt;TS_NAME> USER &lt;USER_NAME>;
-</pre>
+    <code>
+purge index &lt;index_name>;
+--一般用户清除自己的回收站
+purge recyclebin;
+--dba清除任何表空间中的回收站
+purge dba_recyclebin;
+--清除指定表空间回收站
+purge tablespace &lt;ts_name>;
+--清除指定表空间中指定用户的回收站
+purge tablespace &lt;ts_name> user &lt;user_name>;
+    </code>
+  </pre>
 
   <h1>关系</h1>
   <pre class="code">
-select * from SYS.USER_DEPENDENCIES</pre>
+    <code>
+select * from sys.user_dependencies
+    </code>
+  </pre>
 
   <h1>事务</h1>
   <pre class="code">
+    <code>
 set transaction read only | read write; 
 set transaction isolation level serializable | read commited; 
 
-<span class="comment">--子程序自治事务</span>
-pragma autonomous_transaction;</pre>
+--子程序自治事务
+pragma autonomous_transaction;
+--示例
+create or replace procedure sub_block is  
+pragma autonomous_transaction;  
+begin
+...
+    </code>
+  </pre>
 </body>
 </html>

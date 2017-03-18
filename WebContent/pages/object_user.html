@@ -7,6 +7,8 @@
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
 
 <script type="text/javascript" src="../js/title.js"></script>
 <script type="text/javascript" src="../js/highlight.pack.js"></script>
@@ -15,16 +17,20 @@
 <body>
   <h1>创建</h1>
   <pre class="code">
+    <code>
 CREATE USER username
   IDENTIFIED BY [password|EXTERNALLY|]
   [DEFAULT TABLESPACE  UserTableSpaceName]
   [TEMPORARY TABLESPACE TempTableSpaceName]
   [PROFILE FILENAME]
   [QUOTA n M|K|UNLIMITED on UserTableSpaceName]
-  [ACCOUNT LOCK |UNLOCK];</pre>
+  [ACCOUNT LOCK |UNLOCK];
+    </code>
+  </pre>
   
   <h1>修改</h1>
   <pre class="code">
+    <code>
 Alter USER username
   IDENTIFIED BY [password|EXTERNALLY|]
   [DEFAULT TABLESPACE  UserTableSpaceName]
@@ -32,27 +38,38 @@ Alter USER username
   [PROFILE FILENAME]
   [QUOTA n M|K|UNLIMITED on UserTableSpaceName]
   DAFAULT ROLE ROLE_LIST|ALL|EXCEPT ROLE_LIST|NONE
-  [ACCOUNT LOCK |UNLOCK];</pre>
+  [ACCOUNT LOCK |UNLOCK];
+    </code>
+  </pre>
   
   <h1>删除</h1>
   <pre class="code">
-drop user &lt;user_name> cascade;   </pre>
+    <code>
+drop user &lt;user_name> cascade;   
+    </code>
+  </pre>
   <p>cascade 关键字不仅可以删除所有的用户对象，而且还可以删除其他用户模式中对已删除对象表进行引用的约束，使其他用户所拥有的引用了已删除对象的对象无效。</p>
 
   <h1>查询</h1>
   <pre class="code">
-SELECT * FROM DBA_USERS;
-SELECT * FROM ALL_USERS;
-SELECT * FROM USER_USERS; </pre>
+    <code>
+select * from dba_users;
+select * from all_users;
+select * from user_users; 
+    </code>
+  </pre>
 
   <h1>权限</h1>
   <pre class="code">
-<span class="notice">--赋予对象权限</span>
+    <code>
+--赋予对象权限
 grant object_privilege on object_name to username [with grant option];  
-<span class="notice">--删除对象权限</span>
+--删除对象权限
 revoke object_privilege on object_name from username;
-<span class="notice">--赋予角色</span>
-grant role_name to user_name [with admin option];</pre>
+--赋予角色
+grant role_name to user_name [with admin option];
+    </code>
+  </pre>
 
 </body>
 </html>

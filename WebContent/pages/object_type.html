@@ -7,6 +7,8 @@
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
 
 <script type="text/javascript" src="../js/title.js"></script>
 <script type="text/javascript" src="../js/highlight.pack.js"></script>
@@ -15,16 +17,15 @@
 <body>
   <h1>创建</h1>
   <pre class="code">
-CREATE OR REPLACE TYPE &lt;TYPE_NAME> AS OBJECT
-  (&lt;COLUMN_NAME>,
+    <code>
+create or replace type &lt;type_name> as object
+  (&lt;column_name>,
     …
   )
     
-
-    
-CREATE OR REPLACE TYPE &lt;TYPE_NAME> AS TABLE OF &lt;TYPE>;
-</pre>
-    
+create or replace type &lt;type_name> as table of &lt;type>;
+    </code>
+  </pre>
     
 </body>
 </html>

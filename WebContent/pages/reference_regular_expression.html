@@ -76,7 +76,11 @@
   </table>
   
   <h2>regexp_like</h2>
-  <pre class="code">regexp_like(search_string, pattern [, match_option])</pre>
+  <pre class="code">
+    <code>
+regexp_like(search_string, pattern [, match_option])
+    </code>
+  </pre>
   <ul>
     <li>search_string 	搜索值</li>
     <li>pattern 正则表达式，512字节内</li>
@@ -104,61 +108,93 @@
     </tbody>
   </table>
   <p class="next">示例：</p>
-  <pre class="code"><code>select * from jobs where regexp_like(job_title,'^S');</code></pre>
-  <p>结果：</p>
   <pre class="code">
+    <code>
+select * from jobs where regexp_like(job_title,'^S');
+    </code>
+  </pre>
+  <p>结果：</p>
+  <pre class="textarea">
 JOB_ID     JOB_TITLE       			MIN_SALARY MAX_SALARY
 ---------- ----------------------------------- ---------- ----------
 SA_MAN		Sales Manager 			10000 		20000
 SA_REP		Sales Representative		6000		12000
 ST_MAN		Stock Manager			5500		8500
 ST_CLERK	Stock Clerk			2000		5000
-SH_CLERK	Shipping Clerk			2500		5500</pre>
+SH_CLERK	Shipping Clerk			2500		5500
+  </pre>
   
   <h2>regexp_instr</h2>
-  <pre class="code">regexp_instr(search_string, pattern [, position [, occurrence [, return_option [, match_option]]]])</pre>
+  <pre class="code">
+    <code>
+regexp_instr(search_string, pattern [, position [, occurrence [, return_option [, match_option]]]])
+    </code>
+  </pre>
   <ul>
     <li>position 搜索开始位置的正整数（默认为1）</li>
     <li>occurrence 	将要搜索模式的发生次数，默认1，表示将要搜索第一次发生时的值</li>
     <li>return_option	该函数应该返回的值，0表示开始匹配位置，非0表示匹配结束位置</li>
   </ul>
   <p class="next">示例：</p>
-  <pre class="code"><code>select * from jobs where regexp_instr(job_title,'M',1,2,0)>0;</code></pre>
-  <p>结果：</p>
   <pre class="code">
+    <code>
+select * from jobs where regexp_instr(job_title,'M',1,2,0)>0;
+    </code>
+  </pre>
+  <p>结果：</p>
+  <pre class="textarea">
 JOB_ID     JOB_TITLE                     MIN_SALARY 	MAX_SALARY
 ---------- ----------------------------------- 	---------- 	----------
-MK_MAN    Marketing Manager           9000      	15000</pre>
+MK_MAN    Marketing Manager           9000      	15000
+  </pre>
 <p>注释：搜索字符M在job_title中第二次出现的字符串。</p>
   
   <h2>regexp_replace</h2>
-  <pre class="code">regexp_replace(search_string,pattern [, replacestr [, position [, occurrence [, match_option]]]])</pre>
+  <pre class="code">
+    <code>
+regexp_replace(search_string,pattern [, replacestr [, position [, occurrence [, match_option]]]])
+    </code>
+  </pre>
   <ul>
     <li>replacestr  替换字符串</li>
   </ul>
   <p class="next">示例：</p>
-  <pre class="code"><code>select regexp_replace('I am a student','student$','teacher') from dual;</code></pre>
-  <p>结果：</p>
   <pre class="code">
+    <code>
+select regexp_replace('I am a student','student$','teacher') from dual;
+    </code>
+  </pre>
+  <p>结果：</p>
+  <pre class="textarea">
 REGEXP_REPLACE
 --------------
-I am a teacher</pre>
+I am a teacher
+  </pre>
   
   <h2>regexp_substr</h2>
-  <pre class="code">regexp_substr(search_string, pattern[, position[, occurrence[, match_option]]])</pre>
+  <pre class="code">
+    <code>
+regexp_substr(search_string, pattern[, position[, occurrence[, match_option]]])
+    </code>
+  </pre>
   <p class="next">示例：</p>
-  <pre class="code"><code>select job_title,
+  <pre class="code">
+    <code>
+select job_title,
   regexp_substr(job_title,'[a-h]',1,2) reg_job_title
   from jobs
-  where regexp_instr(job_title,'a',1,3)>0;</code></pre>
+  where regexp_instr(job_title,'a',1,3)>0;
+    </code>
+  </pre>
   <p>结果：</p>
-  <pre class="code">
+  <pre class="textarea">
 JOB_TITLE                           REG_JOB_TITLE
 ----------------------------------- ---------------
 Finance Manager                     	c
 Sales Manager                       	e
 Purchasing Manager                  	h
-Marketing Manager                  	e</pre>
+Marketing Manager                  	e
+  </pre>
 
 </body>
 </html>

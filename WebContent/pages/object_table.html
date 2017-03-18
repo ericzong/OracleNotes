@@ -7,6 +7,8 @@
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
 
 <script type="text/javascript" src="../js/title.js"></script>
 <script type="text/javascript" src="../js/highlight.pack.js"></script>
@@ -17,6 +19,7 @@
 
   <h1>修改</h1>
   <pre class="code">
+    <code>
 alter table &lt;table_name> allocate extent(size &lt;file_size> datafile &lt;datafile_path>);
 
 alter table &lt;table_name> move tablespace &lt;tablespace_name>;
@@ -25,36 +28,50 @@ alter table &lt;table_name> drop column &lt;column_name> cascade constraints [ch
 
 alter table &lt;table_name> set unused column &lt;column_name> cascade constraints;
 
-alter table &lt;table_name> drop unused columns [checkpoint &lt;checkpoint_name>];</pre>
+alter table &lt;table_name> drop unused columns [checkpoint &lt;checkpoint_name>];
+    </code>
+  </pre>
 
   <h1>查询</h1>
   <pre class="code">
-SELECT * FROM ALL_TAB_COMMENTS;
-SELECT * FROM USER_TAB_COMMENTS;
+    <code>
+select * from all_tab_comments;
+select * from user_tab_comments;
 
-SELECT *FROM ALL_COL_COMMENTS;
-SELECT * FROM USER_COL_COMMENTS;
+select *from all_col_comments;
+select * from user_col_comments;
 
-SELECT * FROM ALL_TAB_COLUMNS;
-SELECT * FROM USER_TAB_COLUMNS;
+select * from all_tab_columns;
+select * from user_tab_columns;
 
-SELECT * FROM DBA_TABLES;
-SELECT * FROM ALL_TABLES;
-SELECT * FROM USER_ALL_TABLES;
+select * from dba_tables;
+select * from all_tables;
+select * from user_all_tables;
 
-SELECT * FROM USER_TABLES;</pre>
+select * from user_tables;
+    </code>
+  </pre>
 
   <h1>删除</h1>
   <pre class="code">
-DROP TABLE &lt;TABLE_NAME> [PURGE];</pre>
+    <code>
+drop table &lt;table_name> [purge];
+    </code>
+  </pre>
   
   <h1>恢复</h1>
   <pre class="code">
-  FLASHBACK TABLE &lt;TABLE_NAME> TO [BEFORE DROP | SCN &lt;SCN>] [RENAME TO &lt;NEW_TABLE_NAME>];</pre>
+    <code>
+flashback table &lt;table_name> to [before drop | scn &lt;scn>] [rename to &lt;new_table_name>];
+    </code>
+  </pre>
 
   <h1>清除</h1>
   <pre class="code">
-PURGE TABLE &lt;TABLE_NAME>;</pre>
+    <code>
+purge table &lt;table_name>;
+    </code>
+  </pre>
   
 </body>
 </html>
