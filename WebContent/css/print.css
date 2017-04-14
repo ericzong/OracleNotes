@@ -28,8 +28,8 @@ body {
 	margin: 0;
 	padding: 0;
 	/* 分栏 */
-	column-count:2;
-	-moz-column-count: 1; 	/* Firefox */
+	column-count: 2;
+	-moz-column-count: 1; /* Firefox */
 	-webkit-column-count: 2; /* Safari 和 Chrome */
 }
 
