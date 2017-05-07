@@ -60,7 +60,7 @@ body>p {
 
 /* 紧临下行 */
 .next {
-	margin-bottom: 0;
+	margin-bottom: 2px;
 }
 
 .next+* {
@@ -75,6 +75,26 @@ div.textarea {
 	border: 1px solid;
 	width: 80%;
 	padding: 5px;
+}
+
+div.textarea ul {
+	margin: 0;
+	margin-left: 2em;
+	padding: 0;
+}
+
+div.textarea ol {
+	margin: 0;
+	margin-left: 2em;
+	padding: 0;
+}
+
+div.textarea li {
+	margin: 0;
+}
+
+div.textarea p {
+	margin: 0;
 }
 
 div.code {
@@ -119,14 +139,13 @@ pre.textarea {
 pre.code {
 	border: 1px solid;
 	width: 80%;
-	padding: 5px;
+	padding-left: 10px;
+	padding-bottom: 10px;
 }
 
 pre.code>code {
 	margin: 0;
 	padding: 0;
-	margin-top: -1.5em;
-	margin-bottom: -2.5em;
 }
 
 /* 无标记列表 */

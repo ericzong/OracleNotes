@@ -29,7 +29,7 @@ body {
 	padding: 0;
 	/* 分栏 */
 	column-count: 2;
-	-moz-column-count: 1; /* Firefox */
+	-moz-column-count: 2; /* Firefox */
 	-webkit-column-count: 2; /* Safari 和 Chrome */
 }
 
@@ -55,4 +55,9 @@ a {
 
 a[href^=http]:after {
 	content: "(" attr(href) ")";
+}
+
+/* 折叠 */
+.fold .ico {
+	display: none;
 }
