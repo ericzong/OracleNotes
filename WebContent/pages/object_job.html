@@ -16,33 +16,21 @@
 </head>
 <body>
   <h1>运行</h1>
-  <pre class="code">
-    <code>
-dbms_scheduler.run_job([name=>]&lt;JOB_NAME>);
-    </code>
-  </pre>
+  <pre class="code"><code>
+dbms_scheduler.run_job([name=>]&lt;JOB_NAME>);</code></pre>
 
   <h1>停止</h1>
-  <pre class="code">
-    <code>
-dbms_scheduler.stop_job('&lt;job_name, sys.default_job_class>');
-    </code>
-  </pre>
+  <pre class="code"><code class="sql">
+dbms_scheduler.stop_job('&lt;job_name, sys.default_job_class>');</code></pre>
 
   <h1>禁/启用</h1>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 dbms_scheduler.disable([name=>]&lt;job_name>);
-dbms_scheduler.enable([name=>]&lt;job_name>);
-    </code>
-  </pre>
+dbms_scheduler.enable([name=>]&lt;job_name>);</code></pre>
   
   <h1>查询</h1>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 select state, t.* from user_scheduler_jobs t;
-select * from user_scheduler_running_jobs;
-    </code>
-  </pre>
+select * from user_scheduler_running_jobs;</code></pre>
 </body>
 </html>

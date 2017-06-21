@@ -33,14 +33,11 @@
   </div>
   
   <h2>窗口函数</h2>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 function_name (argument_list)
   over (partition_clause 
     order_by_clause
-    windowing_clause)
-    </code>
-  </pre>
+    windowing_clause)</code></pre>
   <div class="ext">
     partition_clause: 可选分区子句<br/>
     order_by: 可选排序子句<br/>
@@ -53,16 +50,13 @@ function_name (argument_list)
       <li>between ... and ... : 指定窗口的范围</li>
     </ul>
   </div>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 select sale_person,
   sum(sale_amount) as person_amount,
   sum(sum(sale_amount)) over (order by sale_person rows between unbounded prededing and current row) 
 from sales_fact
 group by sale_person
-order by sale_person;
-    </code>
-  </pre>
+order by sale_person;</code></pre>
   <p>在执行累加等分析查询时，可以在 select 语句中使用 where 子句指定条件，表示只有满足 where 子句指定的条件的数据才可以参加分析查询。</p>
   <p>除了计算累计值之外，窗口函数还可以计算移动平均值。</p>
 
@@ -76,11 +70,8 @@ order by sale_person;
     </ol>
   </div>
   
-  <pre class="code">
-    <code>
-function_name(argument_list) over (patition_clause)
-    </code>
-  </pre>
+  <pre class="code"><code>
+function_name(argument_list) over (patition_clause)</code></pre>
   
   <h2>检索当前行的周围行</h2>
   <ul class="none">
@@ -95,21 +86,15 @@ function_name(argument_list) over (patition_clause)
   </ul>
   
   <h2>等级函数</h2>
-  <pre class="code">
-    <code>
-function_name (argument_list) over (partition_clause order_by_clause)
-    </code>
-  </pre>
+  <pre class="code"><code>
+function_name (argument_list) over (partition_clause order_by_clause)</code></pre>
   <p>等级函数的结果与排序子句密切关联。</p>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 select sale_region, 
   sum(sale_amount),
   rank() over (order by sum(sale_amount) desc) as rank_amount
 from sales_fact
 group by sale_region
-order by sale_region;
-    </code>
-  </pre>
+order by sale_region;</code></pre>
 </body>
 </html>

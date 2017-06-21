@@ -15,26 +15,59 @@
 <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
+  
+  <h1>创建</h1>
+  <pre class="code"><code>
+create index &lt;index_name> on &lt;table_name> ( &lt;columns_name> )
+  tablespace &lt;tablespace_name>;</code></pre>
+
   <h1>修改</h1>
-  <pre class="code">
-    <code>
+  
+  <pre class="code"><code>
 --重建表索引
 alter index &lt;index_name> rebuild;
 
 --将索引移动到指定的表空间
-alter index index_name rebuild tablespace &lt;tablespace_name>;
+alter index &lt;index_name> rebuild tablespace &lt;tablespace_name>; 
 
 --移动LOB型索引表空间
-alter table &lt;table_name> move lob(&lt;column_name>) store as (tablespace &lt;tablespace_name>);
-    </code>
-  </pre>
+alter table &lt;table_name> move lob(&lt;column_name>) store as (tablespace &lt;tablespace_name>); </code></pre>
+
+  <h1>查询</h1>
+  <pre class="code"><code>
+select * from user_indexes;
+select * from dba_indexes;
+select * from all_indexes;</code></pre>
 
   <h1>删除</h1>
-  <pre class="code">
-    <code>
-purge index &lt;index_name>;
-    </code>
-  </pre>
+  <pre class="code"><code>
+drop index &lt;index_name> [force];</code></pre>
+
+  <h1>消除</h1>
+  <pre class="code"><code>
+purge index &lt;index_name>;</code></pre>
+
+  <h1>技巧</h1>
+  
+  <h2>批量生成转移语句</h2>
+  <pre class="code"><code>
+--批量生成索引转移语句，将某些索引转移到指定的表空间中
+select 'alter index ' || t.index_name || ' rebuild tablespace &lt;tablespace_name>;' stm
+  from user_indexes t
+ where t.tablespace_name = &lt;user_name>
+ order by t.index_name;
+
+select 'alter index ' || t.segment_name || ' rebuild tablespace &lt;tablespace_name>;' stm, sum(t.BYTES/1024/1024) "size(M)"
+  from dba_segments t
+ where t.tablespace_name = &lt;from_tablespace_name>
+   and t.owner = &lt;user_name>
+   and t.segment_type = 'INDEX'
+ group by t.segment_name
+ order by segment_name;
+</code></pre>
+  <div class="ext">
+    推荐从 user_indexes 生成，因为并非所有索引都会在 dba_segments 中，dba_segments 优点在于可以统计索引占用空间的大小（可用以评估移动的耗时）。
+  </div>
 
 </body>
 </html>

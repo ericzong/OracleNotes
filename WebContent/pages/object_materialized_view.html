@@ -15,60 +15,50 @@
 <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
+
   <h1>创建</h1>
-  <pre class="code">
-    <code>
+  
+  <pre class="code"><code>
 create materialized view &lt;mv_name>
   tablespace &lt;ts_name>
   build deferred
   refresh force on demand
   as
-  &lt;select statement>;
-    </code>
-  </pre>
+  &lt;select statement>;</code></pre>
 
   <h1>重编译</h1>
-  <pre class="code">
-    <code>
-alter materialized view &lt;mv_name> compile;
-    </code>
-  </pre>
+  
+  <pre class="code"><code>
+alter materialized view &lt;mv_name> compile;</code></pre>
 
   <h1>刷新</h1>
-  <pre class="code">
-    <code>
-dbms_mview.refresh(&lt;mv_name>);
-    </code>
-  </pre>
+  
+  <pre class="code"><code>
+dbms_mview.refresh(&lt;mv_name>);</code></pre>
 
   <h1>添加日志</h1>
-  <pre class="code">
-    <code>
+  
+  <pre class="code"><code>
 create materialized view log on &lt;table_name>  
   tablespace &lt;tablespace_name>   
-  with rowid; 
-    </code>
-  </pre>
+  with rowid; </code></pre>
 
   <h1>删除日志</h1>
-  <pre class="code">
-    <code>
-drop materialized view log on &lt;table_name>;
-    </code>
-  </pre>
+  
+  <pre class="code"><code>
+drop materialized view log on &lt;table_name>;</code></pre>
 
   <h1>能力</h1>
+  
   <p>Oracle 的 admin 目录下有文件 <a href="../files/utlxmv.sql" target="_blank">utlxmv.sql</a>，
   用以创建记录物化视图能力的 mv_capabilities_table 表。</p>
   <p>通过执行 DBMS_MVIEW.EXPLAIN_MVIEW 存储过程，就可以在 mv_capabilities_table 表中看到结果。</p>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 declare 
 begin
   dbms_mview.explain_mview(mv, [stmt_id]);
   commit;
-end;
-    </code>
-  </pre>
+end;</code></pre>
+
 </body>
 </html>

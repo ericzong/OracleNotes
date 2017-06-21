@@ -14,8 +14,7 @@
 </head>
 <body>
   <h1>磁盘相关信息查询</h1>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 select a.tablespace_name 表空间,
        c.file_name 表空间数据文件,
        c.bytes / 1024 / 1024 || 'M' 该数据文件大小,
@@ -33,8 +32,6 @@ select a.tablespace_name 表空间,
        dba_data_files c
  where a.tablespace_name = b.tablespace_name(+)
    and a.tablespace_name = c.tablespace_name
- order by a.total_bytes desc
-    </code>
-  </pre>
+ order by a.total_bytes desc; </code></pre>
 </body>
 </html>

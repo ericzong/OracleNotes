@@ -16,44 +16,29 @@
 </head>
 <body>
   <h1>创建</h1>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 create role rolename
-  [not identified|identified by password|externally|];
-    </code>
-  </pre>
+  [not identified|identified by password|externally|];</code></pre>
 
   <h1>修改</h1>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 alter role rolename
-  [not identified|identified by password|externally|];
-    </code>
-  </pre>
+  [not identified|identified by password|externally|];</code></pre>
 
   <h1>删除</h1>
-  <pre class="code">
-    <code>
-drop role rolename;
-    </code>
-  </pre>
+  <pre class="code"><code>
+drop role rolename;</code></pre>
 
   <h1>查询</h1>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 select * from dba_roles; 
 select * from dba_role_privs; 
-select * from user_role_privs;
-    </code>
-  </pre>
+select * from user_role_privs;</code></pre>
 
   <h1>赋予</h1>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 grant role_name to user_name [with admin option];
-grant role_name to other_role_name [with admin option];
-    </code>
-  </pre>
+grant role_name to other_role_name [with admin option];</code></pre>
   
 </body>
 </html>

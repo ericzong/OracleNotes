@@ -16,21 +16,17 @@
 </head>
 <body>
   <h1>创建</h1>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 CREATE USER username
   IDENTIFIED BY [password|EXTERNALLY|]
   [DEFAULT TABLESPACE  UserTableSpaceName]
   [TEMPORARY TABLESPACE TempTableSpaceName]
   [PROFILE FILENAME]
   [QUOTA n M|K|UNLIMITED on UserTableSpaceName]
-  [ACCOUNT LOCK |UNLOCK];
-    </code>
-  </pre>
+  [ACCOUNT LOCK |UNLOCK];</code></pre>
   
   <h1>修改</h1>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 Alter USER username
   IDENTIFIED BY [password|EXTERNALLY|]
   [DEFAULT TABLESPACE  UserTableSpaceName]
@@ -38,38 +34,27 @@ Alter USER username
   [PROFILE FILENAME]
   [QUOTA n M|K|UNLIMITED on UserTableSpaceName]
   DAFAULT ROLE ROLE_LIST|ALL|EXCEPT ROLE_LIST|NONE
-  [ACCOUNT LOCK |UNLOCK];
-    </code>
-  </pre>
+  [ACCOUNT LOCK |UNLOCK];</code></pre>
   
   <h1>删除</h1>
-  <pre class="code">
-    <code>
-drop user &lt;user_name> cascade;   
-    </code>
-  </pre>
+  <pre class="code"><code>
+drop user &lt;user_name> cascade;   </code></pre>
   <p>cascade 关键字不仅可以删除所有的用户对象，而且还可以删除其他用户模式中对已删除对象表进行引用的约束，使其他用户所拥有的引用了已删除对象的对象无效。</p>
 
   <h1>查询</h1>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 select * from dba_users;
 select * from all_users;
-select * from user_users; 
-    </code>
-  </pre>
+select * from user_users; </code></pre>
 
   <h1>权限</h1>
-  <pre class="code">
-    <code>
+  <pre class="code"><code>
 --赋予对象权限
 grant object_privilege on object_name to username [with grant option];  
 --删除对象权限
 revoke object_privilege on object_name from username;
 --赋予角色
-grant role_name to user_name [with admin option];
-    </code>
-  </pre>
+grant role_name to user_name [with admin option];</code></pre>
 
 </body>
 </html>

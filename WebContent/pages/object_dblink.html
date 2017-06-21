@@ -16,13 +16,17 @@
 </head>
 <body>
   <h1>创建</h1>
-  <pre class="code">
-    <code>
+  
+  <pre class="code"><code>
 create database link &lt;link_name>
   connect to &lt;user_name>
   using '(description = (address = (protocol = tcp)(host = &lt;host_ip>)(port = &lt;port>))
-  (connect_data = (server = dedicated) (service_name = &lt;service_name>)))';
-    </code>
-  </pre>
+  (connect_data = (server = dedicated) (service_name = &lt;service_name>)))';</code></pre>
+  
+  <h1>删除</h1>
+  
+  <pre class="code"><code>
+drop database link &lt;link_name>;</code></pre>
+  
 </body>
 </html>
