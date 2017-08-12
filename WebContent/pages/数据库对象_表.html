@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Eric Zong">
+<title>表（table）</title>
+<link type="text/css" rel="stylesheet" href="../css/common.css"  />
+<link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
+<link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
+
+<script type="text/javascript" src="../js/title.js"></script>
+<script type="text/javascript" src="../js/highlight.pack.js"></script>
+<script type="text/javascript">hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+
+  <h1>创建</h1>
+  
+  <h2>简单语法</h2>
+  <pre class="code"><code>
+create table &lt;TableName> (&lt;ColumnDefination>)
+  [tablespace &lt;TablespaceName>];</code></pre>
+  
+  <h2>完整语法</h2>
+  
+  <p class="next">持久化表（persistent table）</p>
+  <pre class="code"><code>
+CREATE TABLE [Owner.]TableName
+(
+    {{ColumnDefinition} [,...]
+     [PRIMARY KEY (ColumnName [,...]) |
+     [[CONSTRAINT ForeignKeyName]
+        FOREIGN KEY ([ColumnName] [,...])
+        REFERENCES RefTableName
+            [(ColumnName [,...])] [ON DELETE CASCADE]] [...]
+    }
+)
+[UNIQUE HASH ON (HashColumnName [,...])
+    PAGES = PrimaryPages]
+[AGING {LRU|
+         USE ColumnName
+             LIFETIME Num1 {SECOND[S] | MINUTE[S] | HOUR[S] |DAY[S]}
+               [CYCLE Num2 {SECOND[S] | MINUTE[S] |HOUR[S] |DAY[S]}]
+       }[ON|OFF]
+]
+[AS SelectQuery] </code></pre>
+
+  <p class="next">临时表（temporary table）</p>
+  <pre class="code"><code>
+CREATE GLOBAL TEMPORARY TABLE [Owner.]TableName
+(
+    {{ColumnDefinition} [,...]
+     [PRIMARY KEY (ColumnName [,...]) |
+     [[CONSTRAINT ForeignKeyName]
+        FOREIGN KEY ([ColumnName] [,...])
+        REFERENCES RefTableName
+             [(ColumnName [,...])] [ON DELETE CASCADE]] [...]
+      }
+)
+[UNIQUE HASH ON (HashColumnName [,...])
+    PAGES = PrimaryPages]
+[ON COMMIT { DELETE | PRESERVE } ROWS ] </code></pre>
+
+  <h1>修改</h1>
+  
+  <h2>列</h2>
+  <pre class="code"><code>
+-- To add columns:
+-- 添加单列
+ALTER TABLE [Owner.]TableName 
+ ADD [COLUMN] ColumnName ColumnDataType
+  [DEFAULT DefaultVal] [[NOT] INLINE] [UNIQUE] [NULL];
+-- 添加多列
+ALTER TABLE [Owner.]TableName 
+ ADD (ColumnName ColumnDataType 
+  [DEFAULT DefaultVal] [[NOT] INLINE] [UNIQUE] [NULL] [, ... ] );
+-- To remove columns:
+-- 删除单列
+ALTER TABLE [Owner.]TableName 
+  DROP [COLUMN] ColumnName;
+-- 删除多列
+ALTER TABLE [Owner.]TableName
+  DROP (ColumnName [, ... ] );
+</code></pre>
+
+  <h2>键、索引和默认值</h2>
+  <pre class="code"><code>
+-- To add a primary key constraint using a range index:
+ALTER TABLE [Owner.]TableName ADD CONSTRAINT ConstraintName
+  PRIMARY KEY (ColumnName [,... ]);
+-- To add a primary key constraint using a hash index:
+ALTER TABLE [Owner.]TableName ADD CONSTRAINT ConstraintName
+  PRIMARY KEY (ColumnName [,... ])
+  [USE HASH INDEX PAGES = {RowPages | CURRENT}];
+
+-- To add a foreign key and optionally add ON DELETE CASCADE:
+ALTER TABLE [Owner.]TableName 
+  ADD [CONSTRAINT ForeignKeyName] FOREIGN KEY
+    (ColumnName [,...]) REFERENCES RefTableName
+       [(ColumnName [,...])] [ON DELETE CASCADE];
+-- To remove a foreign key:
+ALTER TABLE [Owner.]TableName 
+  DROP CONSTRAINT ForeignKeyName;
+  
+-- To add or drop a unique constraint on a column:
+ALTER TABLE Owner.]TableName
+  {ADD | DROP} UNIQUE (ColumnName);
+
+-- To resize a hash index:
+ALTER TABLE [Owner.]TableName
+  SET PAGES = {RowPages | CURRENT};
+-- To change the primary key to use a hash index:
+ALTER TABLE [Owner.]TableName
+  USE HASH INDEX PAGES = {RowPages | CURRENT};
+-- Change the primary key to use a range index with the USE TREE INDEX clause:
+ALTER TABLE [Owner.]TableName
+  USE TREE INDEX;
+
+-- To change the default value of a column:
+ALTER TABLE [Owner.]TableName
+  MODIFY (ColumnName DEFAULT DefaultVal);
+-- To remove the default value of a column that is nullable, by changing it to NULL:
+ALTER TABLE [Owner.]TableName
+MODIFY (ColumnName DEFAULT NULL);</code></pre>
+  
+  <h2>其它</h2>
+  <pre class="code"><code>
+-- 修改表存储的表空间
+alter table &lt;TableName> move tablespace &lt;TablespaceName>;
+-- 删除列
+alter table &lt;TableName> drop column &lt;ColumnName> cascade constraints [checkpoint &lt;CheckpointName>];
+
+alter table &lt;TableName> set unused column &lt;ColumnName> cascade constraints;
+
+alter table &lt;TableName> drop unused columns [checkpoint &lt;CheckpointName>];
+
+alter table &lt;TableName> allocate extent(size &lt;FileSize> datafile &lt;DatafilePath>);</code></pre>
+
+  <h2>注释</h2>
+  <pre class="code"><code>
+comment on table &lt;TABLE_NAME> 
+  is &lt;COMMENT_TEXT>;
+comment on column &lt;TABLE_NAME>.&lt;COLUMN_NAME> 
+  is &lt;COMMENT _TEXT>; </code></pre>
+
+  <h1>删除</h1>
+  <pre class="code"><code>
+drop table &lt;TABLE_NAME> [purge];</code></pre>
+  <div class="ext">
+    注：删除掉的表、索引等对象默认放入回收站中，除非删除时指定了 purge 关键字。回收站中的对象可以通过 flashback 快速恢复。
+  </div>
+  
+  <h1>恢复</h1>
+  <pre class="code"><code class="sql">
+flashback table &lt;TABLE_NAME> to [before drop | scn &lt;scn>] [rename to &lt;new_table_name>];</code></pre>
+
+  <h1>清除</h1>
+  <pre class="code"><code>
+purge table &lt;TABLE_NAME>;</code></pre>
+
+  <h1>数据字典</h1>
+  <table>
+    <tr>
+      <th>表名</th>
+      <th>描述</th>
+    </tr>
+    <tr>
+      <td>&lt;user|all|dba>_all_tables</td>
+      <td>表信息</td>
+    </tr>
+    <tr>
+      <td>&lt;user|all|dba>_tables</td>
+      <td>表信息</td>
+    </tr>
+    <tr>
+      <td>&lt;user|all|dba>_tab_columns</td>
+      <td>列信息</td>
+    </tr>
+    <tr>
+      <td>&lt;user|all|dba>_tab_comments</td>
+      <td>表注释</td>
+    </tr>
+    <tr>
+      <td>&lt;user|all|dba>_col_comments</td>
+      <td>列注释</td>
+    </tr>
+  </table>
+
+  <h1>技巧</h1>
+  
+  <h2>批量生成修改表空间语句</h2>
+  <pre class="code"><code>
+-- 批量生成语句，将某些表转移到指定的表空间中
+select 'alter table ' || t.table_name || ' move tablespace &lt;tablespace_name>;' stm
+  from user_tables t
+ where t.tablespace_name = &lt;from_tablespace_name>
+ order by t.table_name;
+
+select 'alter table ' || t.segment_name || ' move tablespace &lt;tablespace_name>;' stm, sum(t.BYTES/1024/1024) "size(M)"
+  from dba_segments t
+ where t.tablespace_name = &lt;from_tablespace_name>
+   and t.owner = &lt;user_name>
+   and t.segment_type = 'TABLE'
+ group by t.segment_name
+ order by segment_name; </code></pre>
+  <div class="ext">
+    推荐从 user_tables 生成，因为并非所有表都会在 dba_segments 中，dba_segments 优点在于可以统计表占用空间的大小（可用以评估移动的耗时）。
+  </div>
+  
+</body>
+</html>
