@@ -14,6 +14,7 @@
 <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
+
   <h1>关于标识符长度的限制</h1>
   <p>标识符，指表、列、函数、存储过程等对象的名称，注意也包括程序中的变量、参数等名称，即囊括几乎所有名称。</p>
   <p>在 Oracle 中，对标识符是有长度限制的：</p>
@@ -26,5 +27,9 @@
   <p>以中文为例，如果标识符都是中文，而数据库使用 UFT-8 字符集，那么通常一个中文字占3个字节，即此时标识符最多可以是 10 个中文字。
   否则，会出现“ORA-00972: Identifier is too long”异常。</p>
   <p>该限制可以从 USER_TABLES、USER_TAB_COLUMNS、USER_CONSTRAINTS 等数据字典表相关字段长度得到印证。</p>
+  
+  <h1>length 函数</h1>
+  <p>length('')  空字符串的长度不是 0，而是 null。因为空字符串被视为 null，所以，length(null) 返回的仍然是 null。</p>
+  
 </body>
 </html>

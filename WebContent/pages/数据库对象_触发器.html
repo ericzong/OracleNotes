@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Eric Zong">
+<title>触发器（trigger）</title>
+<link type="text/css" rel="stylesheet" href="../css/common.css"  />
+<link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
+<link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
+
+<script type="text/javascript" src="../js/title.js"></script>
+<script type="text/javascript" src="../js/highlight.pack.js"></script>
+<script type="text/javascript">hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+  
+  <h1>创建/修改</h1>
+  
+  <pre class="code"><code>
+create [or replace] trigger &lt;TriggerName>
+  &lt;before|after>
+  &lt;insert|delete|update [of Column [, Column …]]>
+  on [Schema.]&lt;TableName>|[Schema.]&lt;ViewName> 
+  [for each row ]
+  [when condition];</code></pre>
+  
+  <h1>启用/禁用</h1>
+  
+  <pre class="code"><code>
+alter trigger &lt;TriggerName> &lt;enable|disable>;</code></pre>
+
+  <h1>删除</h1>
+  
+  <pre class="code"><code>
+alter trigger &lt;TriggerName> &lt;enable|disable>;</code></pre>
+
+  <h1>注意事项</h1>
+  
+  <p>瞬态是针对表来说，当表被修改时，其状态是瞬态的。正是因为其不确定性，Oracle不允许访问一个瞬态表。
+  在Oracle的用户手册中描述了触发时机与瞬态的关系：当使用行级触发器时，如果使用了before关键字，
+  那么使用单条插入的方式可以访问触发器的关联表，如果使用批量插入的方式，将不能访问触发器的关联表，
+  因为此时的触发器关联表是瞬态的。</p>
+  
+</body>
+</html>
