@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="author" content="Eric Zong">
-<title>视图（View）</title>
+<title>视图（view）</title>
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
@@ -26,25 +26,22 @@
   <h2>关系视图</h2>
   <h3>创建</h3>
   <pre class="code"><code>
-create [or replace] [force|noforce] view &lt;view_name>[(alias1，alias2...)]
-  as &lt;subquery>
-  [with check option [constraint &lt;constraint_name>]]
+create [or replace] [force|noforce] view &lt;ViewName>[(alias1, alias2...)]
+  as &lt;Subquery>
+  [with check option [constraint &lt;ConstraintName>]]
   [with read only];</code></pre>
   
   <h3>编译</h3>
   <pre class="code"><code>
-alter view &lt;view_name> compile;</code></pre>
+alter view &lt;ViewName> compile;</code></pre>
 
-  <h3>查询</h3>
-  <pre class="code"><code>
-select * from user_views;
-select * from all_views;
-select * from dba_views;</code></pre>
+  <h3>数据字典</h3>
+  <p>&lt;user|all|dba>_views</p>
   
   <h2>内嵌视图</h2>
   <h3>更新</h3>
   <pre class="code"><code>
---内嵌视图更新表数据
+-- 内嵌视图更新表数据
 update 
   (select salary
        from employees
@@ -54,14 +51,51 @@ set salary = salary + 300;</code></pre>
   <h2>对象视图</h2>
   <h3>创建</h3>
   <pre class="code"><code>
-CREATE TYPE TypeName IS OBJECT({ColumnDefinition});
+create type &lt;ObjectName> is object(&lt;ColumnDefinition>);
 
-CREATE OR REPLACE VIEW ViewName
-  OF ObjectName
-  WITH OBJECT OID(ObjectColumnName) AS
-    SELECT … FROM TableName;</code></pre>
+create or replace view &lt;ViewName>
+  of &lt;ObjectName>
+  with object oid(&lt;ObjectColumnName>) 
+    as &lt;SubQuery>;</code></pre>
   
   <h2>物化视图</h2>
+  
+  <h3>创建</h3>
+  <pre class="code"><code>
+create materialized view &lt;MaterializedViewName>
+  tablespace &lt;TablespaceName>
+  build deferred
+  refresh force on demand
+  as &lt;SubQuery>;</code></pre>
+  
+  <h3>重编译</h3>
+  <pre class="code"><code>
+alter materialized view &lt;MaterializedViewName> compile;</code></pre>
+
+  <h3>刷新</h3>
+  <pre class="code"><code>
+dbms_mview.refresh(&lt;MaterializedViewName>);</code></pre>
+
+  <h3>日志</h3>
+  <pre class="code"><code>
+-- 添加日志
+create materialized view log on &lt;TableName>  
+  tablespace &lt;TablespaceName>   
+  with rowid; 
+  
+-- 删除日志
+drop materialized view log on &lt;TableName>;</code></pre>
+
+  <h3>能力</h3>
+  <p>Oracle 的 admin 目录下有文件 <a href="../files/utlxmv.sql" target="_blank">utlxmv.sql</a>，
+  用以创建记录物化视图能力的 mv_capabilities_table 表。</p>
+  <p>通过执行 DBMS_MVIEW.EXPLAIN_MVIEW 存储过程，就可以在 mv_capabilities_table 表中看到结果。</p>
+  <pre class="code"><code>
+declare 
+begin
+  dbms_mview.explain_mview(mv, [stmt_id]);
+  commit;
+end;</code></pre>
   
   <h1>只读的视图</h1>
   <p>即使是视图，也是可能对其进行更新操作的。但是，有时我们可能不希望由于更新使某些记录从视图中“消失”，或者我们完全不希望视图被更新。

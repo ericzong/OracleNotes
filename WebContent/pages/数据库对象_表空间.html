@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="author" content="Eric Zong">
-<title>表空间（Tablespace）</title>
+<title>表空间（tablespace）</title>
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
@@ -20,57 +20,55 @@
   
   <pre class="code"><code>
 --创建表空间
-create tablespace &lt;tablespace_name>
-  datafile &lt;datafile_path>
-  size &lt;file_size>
+create tablespace &lt;TablespaceName>
+  datafile &lt;DatafilePath>
+  size &lt;FileSize>
   autoextend on
-  next &lt;next_size> maxsize [&lt;max_size> | unlimited]
+  next &lt;NextSize> maxsize [&lt;MaxSize>|unlimited]
   extent management local;
-
 --创建临时表空间
-create temporary tablespace &lt;tablespace_name>
-  tempfile &lt;tempfile_path>
-  size &lt;file_size>
+create temporary tablespace &lt;TablespaceName>
+  tempfile &lt;TempfilePath>
+  size &lt;FileSize>
   autoextend on
-  next &lt;next_size> maxsize &lt;max_size>
+  next &lt;NextSize> maxsize &lt;MaxSize>
   extent management local;
-  
 --创建 UNDO 表空间
-create undo tablespace &lt;tablespace_name>
-  datafile &lt;datafile_path>
-  size &lt;file_size>
+create undo tablespace &lt;TablespaceName>
+  datafile &lt;DatafilePath>
+  size &lt;FileSize>
   autoextend on
-  next &lt;next_size> maxsize [&lt;max_size> | unlimited]
+  next &lt;NextSize> maxsize [&lt;MaxSize>|unlimited]
   extent management local;</code></pre>
 
   <h1>删除</h1>
   <pre class="code"><code>
-drop tablespace &lt;tablespace_name> including contents and datafiles;</code></pre>
+drop tablespace &lt;TablespaceName> including contents and datafiles;</code></pre>
 
   <h1>修改</h1>
   
   <pre class="code"><code>
---修改默认表空间
-alter [user &lt;user_name>|database] default tablespace &lt;tablespace_name>;
-alter [user &lt;user_name>|database] default temporary tablespace &lt;tablespace_name>;
+-- 修改默认表空间
+alter [user &lt;UserName>|database] default tablespace &lt;TablespaceName>;
+alter [user &lt;UserName>|database] default temporary tablespace &lt;TablespaceName>;
 alter system set undo_tablespace='';
 
---修改表空间名称
-alter tablespace &lt;tablespace_name> rename to &lt;new_tablespace_name>;
+-- 修改表空间名称
+alter tablespace &lt;TablespaceName> rename to &lt;NewTablespaceName>;
 
---修改表空间数据文件配置
-alter database datafile &lt;datafile_path>
-  autoextend on next &lt;next_size> maxsize [&lt;max_size> | unlimited];
-alter database datafile &lt;file_path> resize &lt;size>;
-alter database tempfile &lt;tempfile_path> resize &lt;size>;
+-- 修改表空间数据文件配置
+alter database datafile &lt;DatafilePath>
+  autoextend on next &lt;NextSize> maxsize [&lt;MaxSize>|unlimited];
+alter database datafile &lt;FilePath> resize &lt;Size>;
+alter database tempfile &lt;TempfilePath> resize &lt;Size>;
   
---修改表空间对应的数据文件
-alter tablespace &lt;tablespace_name> add|drop datafile &lt;file_path> size &lt;size>
-  autoextend on next &lt;extend_size>;
+-- 修改表空间对应的数据文件
+alter tablespace &lt;TablespaceName> add|drop datafile &lt;FilePath> size &lt;Size>
+  autoextend on next &lt;ExtendSize>;
 
-alter tablespace &lt;tablespace_name> [online | offline];
+alter tablespace &lt;TablespaceName> [online|offline];
 
-alter tablespace &lt;tablespace_name> [read only | write]; </code></pre>
+alter tablespace &lt;TablespaceName> [read only|write]; </code></pre>
 
   <h1>查询</h1>
   
@@ -78,14 +76,12 @@ alter tablespace &lt;tablespace_name> [read only | write]; </code></pre>
 --查询默认表空间
 select username, default_tablespace from dba_users;
 show parameter undo;
-
 --查询个表空间文件信息
 select file_name, tablespace_name, bytes from dba_data_files;
-
 --查询表空间包含的对象
 select t.owner, t.segment_name, sum(bytes) / 1024 / 1024
   from dba_segments t
- where t.tablespace_name = &lt;tablespace_name>
+ where t.tablespace_name = &lt;TablespaceName>
  group by t.owner, t.segment_name
  order by sum(bytes) desc;</code></pre>
  
@@ -93,41 +89,41 @@ select t.owner, t.segment_name, sum(bytes) / 1024 / 1024
    
   <h2>移动表</h2>
   <pre class="code"><code>
-alter table &lt;table_name> move tablespace &lt;tablespace_name>;</code></pre>
+alter table &lt;TableName> move tablespace &lt;TablespaceName>;</code></pre>
    
   <h2>移动索引</h2>
   <pre class="code"><code>
 --移动普通索引
-alter index &lt;index_name> rebuild tablespace &lt;tablespace_name>; </code></pre>
+alter index &lt;IndexName> rebuild tablespace &lt;TablespaceName>; </code></pre>
  
   <h1>技巧</h1>
   
   <h2>批量生成转移语句</h2>
   <pre class="code"><code>
 --批量生成表转移语句，将某些表转移到指定的表空间中
-select 'alter table ' || t.table_name || ' move tablespace &lt;tablespace_name>;' stm
+select 'alter table ' || t.table_name || ' move tablespace &lt;TablespaceName>;' stm
   from user_tables t
- where t.tablespace_name = &lt;from_tablespace_name>
+ where t.tablespace_name = &lt;FromTablespaceName>
  order by t.table_name;
 
-select 'alter table ' || t.segment_name || ' move tablespace &lt;tablespace_name>;' stm, sum(t.BYTES/1024/1024) "size(M)"
+select 'alter table ' || t.segment_name || ' move tablespace &lt;TablespaceName>;' stm, sum(t.BYTES/1024/1024) "size(M)"
   from dba_segments t
- where t.tablespace_name = &lt;from_tablespace_name>
-   and t.owner = &lt;user_name>
+ where t.tablespace_name = &lt;FromTablespaceName>
+   and t.owner = &lt;UserName>
    and t.segment_type = 'TABLE'
  group by t.segment_name
  order by segment_name; 
  
 --批量生成索引转移语句，将某些索引转移到指定的表空间中
-select 'alter index ' || t.index_name || ' rebuild tablespace &lt;tablespace_name>;' stm
+select 'alter index ' || t.index_name || ' rebuild tablespace &lt;TablespaceName>;' stm
   from user_indexes t
- where t.tablespace_name = &lt;user_name>
+ where t.tablespace_name = &lt;UserName>
  order by t.index_name;
 
-select 'alter index ' || t.segment_name || ' rebuild tablespace &lt;tablespace_name>;' stm, sum(t.BYTES/1024/1024) "size(M)"
+select 'alter index ' || t.segment_name || ' rebuild tablespace &lt;TablespaceName>;' stm, sum(t.BYTES/1024/1024) "size(M)"
   from dba_segments t
- where t.tablespace_name = &lt;from_tablespace_name>
-   and t.owner = &lt;user_name>
+ where t.tablespace_name = &lt;FromTablespaceName>
+   and t.owner = &lt;UserName>
    and t.segment_type = 'INDEX'
  group by t.segment_name
  order by segment_name;

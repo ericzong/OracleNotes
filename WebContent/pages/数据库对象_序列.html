@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="author" content="Eric Zong">
-<title>Job</title>
+<title>序列（sequence）</title>
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
@@ -15,22 +15,34 @@
 <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
-  <h1>运行</h1>
-  <pre class="code"><code>
-dbms_scheduler.run_job([name=>]&lt;JOB_NAME>);</code></pre>
 
-  <h1>停止</h1>
-  <pre class="code"><code class="sql">
-dbms_scheduler.stop_job('&lt;job_name, sys.default_job_class>');</code></pre>
-
-  <h1>禁/启用</h1>
-  <pre class="code"><code>
-dbms_scheduler.disable([name=>]&lt;job_name>);
-dbms_scheduler.enable([name=>]&lt;job_name>);</code></pre>
+  <h1>创建</h1>
   
-  <h1>查询</h1>
   <pre class="code"><code>
-select state, t.* from user_scheduler_jobs t;
-select * from user_scheduler_running_jobs;</code></pre>
+create sequence &lt;SequenceName>
+  [increment by &lt;StepSize>]		-- 默认 1
+  [start with &lt;StartValue>]		-- 默认 1
+  [minvalue &lt;MinValue>|nominvalue]	-- 默认 1
+  [maxvalue &lt;MaxValue>|nomaxvalue]	-- 默认 10^27
+  [cycle|nocycle]
+  [cache &lt;CacheSize>|nocache]		-- 默认 20
+  [order|noorder];</code></pre>
+  
+  <h1>修改</h1>
+  
+  <pre class="code"><code>
+alter sequence &lt;SequenceName>
+  [increment by &lt;StepSize>]
+  [minvalue &lt;MinValue>|nominvalue]
+  [maxvalue &lt;MaxValue>|nomaxvalue]
+  [cycle|nocycle]
+  [cache &lt;CacheSize>|nocache]
+  [order|noorder];</code></pre>
+  
+  <h1>删除</h1>
+  
+  <pre class="code"><code>
+drop sequence &lt;SequenceName>;</code></pre>
+
 </body>
 </html>

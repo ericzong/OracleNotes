@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="author" content="Eric Zong">
-<title>Sequence</title>
+<title>Job</title>
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
@@ -15,17 +15,34 @@
 <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
-  <h1>创建</h1>
+  <h1>运行</h1>
   <pre class="code"><code>
-create sequence &lt;sequence_name>
-  minvalue &lt;min_value>
-  maxvalue &lt;max_value>
-  start with &lt;start_value>
-  increment by &lt;step_size>
-  cache &lt;cache_size>;</code></pre>
+dbms_scheduler.run_job([name=>]&lt;JobName>);</code></pre>
+
+  <h1>停止</h1>
+  <pre class="code"><code>
+dbms_scheduler.stop_job('&lt;JobName, sys.default_job_class>');</code></pre>
+
+  <h1>禁/启用</h1>
+  <pre class="code"><code>
+dbms_scheduler.disable([name=>]&lt;JobName>);
+dbms_scheduler.enable([name=>]&lt;JobName>);</code></pre>
   
-  <h1>删除</h1>
-  <pre class="code"><code>
-drop sequence &lt;sequence_name>;</code></pre>
+  <h1>数据字典</h1>
+  <table>
+    <tr>
+      <th>表名</th>
+      <th>描述</th>
+    </tr>
+    <tr>
+      <td>user_scheduler_jobs</td>
+      <td>All scheduler jobs in the database</td>
+    </tr>
+    <tr>
+      <td>user_scheduler_running_jobs</td>
+      <td></td>
+    </tr>
+  </table>
+
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="author" content="Eric Zong">
-<title>类型（Type）</title>
+<title>函数（Function）</title>
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
@@ -15,14 +15,23 @@
 <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
-  <h1>创建</h1>
+
+  <h1>创建/修改</h1>
+  
   <pre class="code"><code>
-create or replace type &lt;type_name> as object
-  (&lt;column_name>,
+create [or replace] function &lt;FunctionName>([Parameters])
+  return &lt;Type>
+  [Deterministic] as
+  begin
     …
-  )
-    
-create or replace type &lt;type_name> as table of &lt;type>;</code></pre>
-    
+end &lt;FunctionName>;</code></pre>
+  
+  <h1>删除</h1>
+  <pre class="code"><code>
+drop function [Schema.]&lt;FunctionName> ;</code></pre>
+
+  <h1>数据字典</h1>
+  <p>user_source：可查询函数的定义，但按行存储的。</p>
+
 </body>
 </html>
