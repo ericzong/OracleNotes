@@ -21,7 +21,9 @@ dbms_scheduler.run_job([name=>]&lt;JobName>);</code></pre>
 
   <h1>停止</h1>
   <pre class="code"><code>
-dbms_scheduler.stop_job('&lt;JobName, sys.default_job_class>');</code></pre>
+dbms_scheduler.stop_job('&lt;JobName, sys.default_job_class>');
+-- 强制停止
+dbms_scheduler.stop_job(job_name => &lt;JobName>,force => true);</code></pre>
 
   <h1>禁/启用</h1>
   <pre class="code"><code>

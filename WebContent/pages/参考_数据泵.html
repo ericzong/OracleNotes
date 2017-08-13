@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Eric Zong">
+<title>数据泵</title>
+<link type="text/css" rel="stylesheet" href="../css/common.css"  />
+<link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
+<link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
+
+<script type="text/javascript" src="../js/title.js"></script>
+<script type="text/javascript" src="../js/highlight.pack.js"></script>
+<script type="text/javascript">hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+  
+  <h1>导出</h1>
+  <p>数据泵导出实用程序提供了一种用于在 Oracle 数据库之间传输数据对象的机制。例如：</p>
+  <pre class="code"><code>
+expdp &lt;UserId>/&lt;Password> directory=&lt;DmpDir> dumpfile=&lt;Filename> schemas=&lt;Schemas>;</code></pre>
+  <p>UserId 必须是命令行中的第一个参数。</p>
+  
+  <table>
+    <tr>
+      <th>关键字</th>
+      <th>候选值</th>
+      <th>说明</th>
+    </tr>
+    <tr>
+      <td>COMPRESSION</td>
+      <td>ALL,    DATA_ONLY, [METADATA_ONLY], NONE</td>
+      <td>减少转储文件大小。</td>
+    </tr>
+    <tr>
+      <td>CONTENT</td>
+      <td>[ALL],    DATA_ONLY, METADATA_ONLY</td>
+      <td>指定要卸载的数据。</td>
+    </tr>
+    <tr>
+      <td>DIRECTORY</td>
+      <td>&nbsp;</td>
+      <td>用于转储文件和日志文件的目录对象。</td>
+    </tr>
+    <tr>
+      <td>DUMPFILE</td>
+      <td>&nbsp;</td>
+      <td>指定目标转储文件名的列表    [expdat.dmp]。
+        例如,    DUMPFILE=scott1.dmp, scott2.dmp, dmpdir:scott3.dmp。</td>
+    </tr>
+    <tr>
+      <td>REUSE_DUMPFILES</td>
+      <td>&nbsp;</td>
+      <td>覆盖目标转储文件 (如果文件存在)    [N]。</td>
+    </tr>
+    <tr>
+      <td>INCLUDE</td>
+      <td>&nbsp;</td>
+      <td>包括特定对象类型。
+        例如,    INCLUDE=TABLE_DATA。</td>
+    </tr>
+    <tr>
+      <td>EXCLUDE</td>
+      <td>&nbsp;</td>
+      <td>排除特定对象类型。
+        例如,    EXCLUDE=SCHEMA:&quot;='HR'&quot;。</td>
+    </tr>
+    <tr>
+      <td>SCHEMAS</td>
+      <td>&nbsp;</td>
+      <td>要导出的方案的列表 [登录方案]。</td>
+    </tr>
+    <tr>
+      <td>TABLESPACES</td>
+      <td>&nbsp;</td>
+      <td>标识要导出的表空间的列表。</td>
+    </tr>
+    <tr>
+      <td>TABLES</td>
+      <td>&nbsp;</td>
+      <td>标识要导出的表的列表。
+        例如,    TABLES=HR.EMPLOYEES,SH.SALES:SALES_1995。</td>
+    </tr>
+    <tr>
+      <td>QUERY</td>
+      <td>&nbsp;</td>
+      <td>用于导出表的子集的谓词子句。
+        例如,    QUERY=employees:&quot;WHERE department_id &gt; 10&quot;。</td>
+    </tr>
+    <tr>
+      <td>SAMPLE</td>
+      <td>&nbsp;</td>
+      <td>要导出的数据的百分比。</td>
+    </tr>
+    <tr>
+      <td>REMAP_DATA</td>
+      <td>&nbsp;</td>
+      <td>指定数据转换函数。
+        例如,    REMAP_DATA=EMP.EMPNO:REMAPPKG.EMPNO。</td>
+    </tr>
+    <tr>
+      <td>FILESIZE</td>
+      <td>&nbsp;</td>
+      <td>以字节为单位指定每个转储文件的大小。</td>
+    </tr>
+    <tr>
+      <td>FULL</td>
+      <td>[N], Y</td>
+      <td>导出整个数据库 [N]。</td>
+    </tr>
+    <tr>
+      <td>HELP</td>
+      <td>[N], Y</td>
+      <td>显示帮助消息 [N]。</td>
+    </tr>
+    <tr>
+      <td>LOGFILE</td>
+      <td>&nbsp;</td>
+      <td>指定日志文件名 [export.log]。</td>
+    </tr>
+    <tr>
+      <td>NOLOGFILE</td>
+      <td>&nbsp;</td>
+      <td>不写入日志文件 [N]。</td>
+    </tr>
+    <tr>
+      <td>NETWORK_LINK</td>
+      <td>&nbsp;</td>
+      <td>源系统的远程数据库链接的名称。</td>
+    </tr>
+    <tr>
+      <td>PARFILE</td>
+      <td>&nbsp;</td>
+      <td>指定参数文件名。</td>
+    </tr>
+  </table>
+  
+  <h1>导入</h1>
+  <p>数据泵导入实用程序提供了一种用于在 Oracle 数据库之间传输数据对象的机制。例如：</p>
+  <pre class="code"><code>
+impdp &lt;UserId>/&lt;Password> directory=&lt;DmpDir> dumpfile=&lt;Schemas>;</code></pre>
+
+  <table>
+    <tr>
+      <td>关键字</td>
+      <td>候选值</td>
+      <td>说明</td>
+    </tr>
+    <tr>
+      <td>CONTENT</td>
+      <td>[ALL], DATA_ONLY, METADATA_ONLY</td>
+      <td>指定要加载的数据。</td>
+    </tr>
+    <tr>
+      <td>DIRECTORY</td>
+      <td>&nbsp;</td>
+      <td>用于转储文件, 日志文件和 SQL 文件的目录对象。</td>
+    </tr>
+    <tr>
+      <td>DUMPFILE</td>
+      <td>&nbsp;</td>
+      <td>例如, DUMPFILE=scott1.dmp, scott2.dmp, dmpdir:scott3.dmp。</td>
+    </tr>
+    <tr>
+      <td>INCLUDE</td>
+      <td>&nbsp;</td>
+      <td>包括特定对象类型。例如, INCLUDE=TABLE_DATA。</td>
+    </tr>
+    <tr>
+      <td>EXCLUDE</td>
+      <td>&nbsp;</td>
+      <td>排除特定对象类型。 例如, EXCLUDE=SCHEMA:&quot;='HR'&quot;。</td>
+    </tr>
+    <tr>
+      <td>SCHEMAS</td>
+      <td>&nbsp;</td>
+      <td>要导入的方案的列表。</td>
+    </tr>
+    <tr>
+      <td>TABLESPACES</td>
+      <td>&nbsp;</td>
+      <td>标识要导入的表空间的列表。</td>
+    </tr>
+    <tr>
+      <td>TABLES</td>
+      <td>&nbsp;</td>
+      <td>标识要导入的表的列表。 例如, TABLES=HR.EMPLOYEES,SH.SALES:SALES_1995。</td>
+    </tr>
+    <tr>
+      <td>QUERY</td>
+      <td>&nbsp;</td>
+      <td>用于导入表的子集的谓词子句。 例如, QUERY=employees:&quot;WHERE department_id &gt; 10&quot;。</td>
+    </tr>
+    <tr>
+      <td>REMAP_DATA</td>
+      <td>&nbsp;</td>
+      <td>指定数据转换函数。 例如, REMAP_DATA=EMP.EMPNO:REMAPPKG.EMPNO。</td>
+    </tr>
+    <tr>
+      <td>REMAP_DATAFILE</td>
+      <td>&nbsp;</td>
+      <td>在所有 DDL 语句中重新定义数据文件引用。</td>
+    </tr>
+    <tr>
+      <td>REMAP_SCHEMA</td>
+      <td>&nbsp;</td>
+      <td>将一个方案中的对象加载到另一个方案。</td>
+    </tr>
+    <tr>
+      <td>REMAP_TABLE</td>
+      <td>&nbsp;</td>
+      <td>将表名重新映射到另一个表。
+        例如,    REMAP_TABLE=EMP.EMPNO:REMAPPKG.EMPNO。</td>
+    </tr>
+    <tr>
+      <td>REMAP_TABLESPACE</td>
+      <td>&nbsp;</td>
+      <td>将表空间对象重新映射到另一个表空间。</td>
+    </tr>
+    <tr>
+      <td>REUSE_DATAFILES</td>
+      <td>&nbsp;</td>
+      <td>如果表空间已存在, 则将其初始化 [N]。</td>
+    </tr>
+    <tr>
+      <td>TABLE_EXISTS_ACTION</td>
+      <td>APPEND, REPLACE, [SKIP], TRUNCATE</td>
+      <td>导入对象已存在时执行的操作。</td>
+    </tr>
+    <tr>
+      <td>FULL</td>
+      <td>&nbsp;</td>
+      <td>导入源中的所有对象 [Y]。</td>
+    </tr>
+    <tr>
+      <td>LOGFILE</td>
+      <td>&nbsp;</td>
+      <td>日志文件名 [import.log]。</td>
+    </tr>
+    <tr>
+      <td>NOLOGFILE</td>
+      <td>&nbsp;</td>
+      <td>不写入日志文件 [N]。</td>
+    </tr>
+    <tr>
+      <td>SQLFILE</td>
+      <td>&nbsp;</td>
+      <td>将所有的 SQL DDL 写入指定的文件。</td>
+    </tr>
+    <tr>
+      <td>NETWORK_LINK</td>
+      <td>&nbsp;</td>
+      <td>源系统的远程数据库链接的名称。</td>
+    </tr>
+    <tr>
+      <td>PARFILE</td>
+      <td>&nbsp;</td>
+      <td>指定参数文件。</td>
+    </tr>
+  </table>
+  
+  <h1>注意</h1>
+  
+  <h2>数据库</h2>
+  <p class="next">导入/导出命令均需要指定 directory 参数，但它不是一个目录路径的字符串表示，而是一个数据库目录对象。
+  需要事先创建该目录对象：</p>
+  <pre class="code"><code>
+create or replace directory &lt;DirectoryName> as &lt;Path>;</code></pre>
+  
+</body>
+</html>
