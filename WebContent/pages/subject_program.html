@@ -8,6 +8,7 @@
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
 <link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
 
 <script type="text/javascript" src="../js/title.js"></script>
 <script type="text/javascript" src="../js/highlight.pack.js"></script>
@@ -47,6 +48,18 @@ type record_name is record (
     <li>使用 exit when 语句</li>
   </ol>
   <p>while 循环：while ... loop ... end loop</p>
+  
+  <h1>事务</h1>
+  
+  <h2>子事务自治</h2>
+  <pre class="code"><code>
+-- 子程序自治事务
+pragma autonomous_transaction;
+-- 示例
+create or replace procedure sub_block is  
+pragma autonomous_transaction;  
+begin
+...</code></pre>
   
   <h1>附录</h1>
   <p>查询 PL/SQL 和 SQL 中的保留字清单：help reserved words</p>

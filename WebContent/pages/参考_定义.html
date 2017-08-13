@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="author" content="Eric Zong">
-<title>定义</title>
+<title>定义（持续更新）</title>
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
@@ -13,9 +13,9 @@
 <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
-  <p><span class="definition">执行计划(Explain plan)</span> 查询在 Oracle 中被执行的一个执行路径。</p>
+  <p><span class="bold">执行计划(Explain plan)</span> 查询在 Oracle 中被执行的一个执行路径。</p>
   
-  <p>SQL 命令可以按功能分为：</p>
+  <p class="next bold">SQL 命令功能分类</p>
   <ul>
     <li>数据检索 select</li>
     <li>数据操作(DML，data manipulation language) insert、update、delete</li>
@@ -24,6 +24,9 @@
     <li>事务处理 commit、rollback、savepoint、set transaction</li>
   </ul>
   
-  <p>SID（System Identifier）</p>
+  <p class="bold">SID（System Identifier）</p>
+  
+  <p class="next"><span class="bold">数据库模式</span>定义为数据库对象的集合。模式的名称就是拥有或控制这些数据库对象集合的用户名称。</p>
+  <div class="ext">在 Oracle 数据库中，可以存在没有拥有任何数据对象的用户（不是模式），但是不会有没有命名的模式或数据库对象集合。</div>
 </body>
 </html>
