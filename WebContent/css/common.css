@@ -58,6 +58,10 @@ body>p {
 	text-indent: 2em;
 }
 
+body>dl {
+	text-indent: 2em;
+}
+
 /* 紧临下行 */
 .next {
 	margin-bottom: 2px;
@@ -73,7 +77,7 @@ body>div, pre {
 
 div.textarea {
 	border: 1px solid;
-	width: 80%;
+	width: 90%;
 	padding: 5px;
 }
 
@@ -99,14 +103,14 @@ div.textarea p {
 
 div.code {
 	border: 1px solid;
-	width: 80%;
+	width: 90%;
 	padding: 5px;
 }
 
 div.ext {
 	border: 1px dotted;
 	background-color: #eeeeee;
-	width: 80%;
+	width: 90%;
 	padding: 5px;
 }
 
@@ -132,13 +136,13 @@ div.ext p {
 
 pre.textarea {
 	border: 1px solid;
-	width: 80%;
+	width: 90%;
 	padding: 5px;
 }
 
 pre.code {
 	border: 1px solid;
-	width: 80%;
+	width: 90%;
 	padding-left: 10px;
 	padding-bottom: 10px;
 }
@@ -146,6 +150,7 @@ pre.code {
 pre.code>code {
 	margin: 0;
 	padding: 0;
+	background-color: transparent;
 }
 
 /* 无标记列表 */
@@ -180,6 +185,18 @@ table, th, td {
 
 td {
 	vertical-align: top;
+}
+
+/* 表格中的代码块 */
+td>pre {
+	margin: 0;
+	margin-top: -14px;
+	padding: 0;
+}
+
+td>pre>code {
+	margin: 0;
+	padding: 0;
 }
 
 /* 编号 */

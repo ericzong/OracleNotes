@@ -18,5 +18,37 @@
   
   <p>Oracle 中的单引号内为字符串，双引号则用于标识对象名称。</p>
   
+  <h1>数据库完整性</h1>
+  
+  <ul>
+    <li>实体完整性（Entity Integrity）：表中行的完整性，主键</li>
+    <li>域完整性（Domain Integrity）：表之间的关系，外键</li>
+    <li>参照完整性（Referential Integrity）：列属性的约束，非空/默认约束</li>
+    <li>用户定义完整性（User-defined Integrity）：用户自定义的约束，检查约束</li>
+  </ul>
+  
+  <h1>SQL 命令功能分类</h1>
+  
+  <ul>
+    <li>数据检索：select</li>
+    <li>数据操作（DML，data manipulation language）：insert、update、delete</li>
+    <li>数据定义（DDL，data definition language）：</li>
+  </ul>
+  
+  <h1>Oracle 四类可存储的程序</h1>
+  
+  <ul>
+    <li>函数，是命名的、存储在数据库中的 PL/SQL 程序块。函数接受 0 个或多个输入参数，有一个返回值，返回值的数据类型在创建函数时定义。</li>
+    <li>
+      存储过程，是一个 PL/SQL 程序块，接受 0 个或多个参数作为输入（input）或输出（output）或既作输入又作输出（inout）。
+      与函数不同，存储过程没有返回值，存储过程不能由 SQL 语句直接使用，只能通过 execute 命令或 PL/SQL 程序块内部调用。
+    </li>
+    <li>触发器，与一个表或数据库事件联系在一起的，当一个触发器事件发生时，定义在表上的触发器被触发。</li>
+    <li>
+      包，其实就是被组合在一起的相关对象的集合，当包中任何函数或存储过程被调用，包就被加载入内存中，包中的任何函数或存储过程的子程序访问速度将大大加快。
+      包由两个部分组成：规范和包主体（body）。规范描述变量、常量、游标、子程序，包体完全定义子程序和游标。
+    </li>
+  </ul>
+  
 </body>
 </html>

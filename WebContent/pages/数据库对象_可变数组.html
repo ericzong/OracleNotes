@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Eric Zong">
+<title>可变数组</title>
+<link type="text/css" rel="stylesheet" href="../css/common.css"  />
+<link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
+<link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
+
+<script type="text/javascript" src="../js/title.js"></script>
+<script type="text/javascript" src="../js/highlight.pack.js"></script>
+<script type="text/javascript">hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+
+  <pre class="code"><code>
+create type worker_type as object
+(
+  id   number,
+  name varchar2(32)
+);
+
+create type worker_list as varray(20) of worker_type;
+
+create table factory(id number, name varchar2(32), workers worker_list);
+
+insert into factory values(1, '工厂1 ', worker_list(worker_type(1, '张三'), worker_type(2, '李四'), worker_type(3, '王五'))); </code></pre>
+
+  <div class="ext">
+    <p class="next">用法跟嵌套表相似，与嵌套表不同在于：</p>
+    <ol>
+      <li><p>可变数组的列不会自动加unique index; </p></li>
+      <li><p>创建表时不必指定可变数组的存储位置（也不会自动创建存储表，尚不明确可变数组的存储位置）</p></li>
+    </ol>
+  </div>
+  
+</body>
+</html>

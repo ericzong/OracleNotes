@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="author" content="Eric Zong">
-<title>程序</title>
+<title>程序编写</title>
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
@@ -60,6 +60,53 @@ create or replace procedure sub_block is
 pragma autonomous_transaction;  
 begin
 ...</code></pre>
+
+  <h1>动态 SQL</h1>
+  
+  <h2>绑定变量</h2>
+  
+  <h3>into/using 绑定</h3>
+  
+  <p>绑定变量需要使用 into、using 关键字。into 用于为输出参数赋值；using 指定输入参数，SQL 字符串中用“:name”引用。</p>
+  <pre class="code"><code>
+set serveroutput on;  
+  
+declare
+  incoming date:=sysdate-10;
+  outgoing int;
+
+begin
+ execute immediate 'select count(*) from user_objects where created > :incoming' into outgoing using incoming;
+ dbms_output.put_line('count is:' || outgoing);
+ 
+end;
+</code></pre>
+  <p>into 绑定的输出参数类型应该与 SQL 中的选择列表中的数据类型一一对应。</p>
+  <p>使用 using 绑定输入参数的好处之一便是不用进行繁琐的类型转换操作。</p>
+  
+  <h3>游标绑定</h3>
+  <pre class="code"><code>
+declare 
+  v_cursor number; --定义游标
+  v_string varchar2(4000); 
+  v_row number; 
+begin 
+  v_string := 'insert into t_object(a) select count(*) from user_objects where created > :incoming';
+ 
+  v_cursor:=dbms_sql.open_cursor;--打开处理游标 
+  dbms_sql.parse(v_cursor,v_string,dbms_sql.native);--解释语句 
+  dbms_sql.bind_variable(v_cursor,':incoming',sysdate-30); --给变量赋值 
+  v_row := dbms_sql.execute(v_cursor);--执行语句 
+  dbms_sql.close_cursor(v_cursor);--关闭游标 
+  --dbms_output.put_line(v_row); 
+  
+  commit; 
+  
+exception 
+  when others then 
+    dbms_sql.close_cursor(v_cursor); --关闭游标 
+    rollback; 
+end; </code></pre>
   
   <h1>附录</h1>
   <p>查询 PL/SQL 和 SQL 中的保留字清单：help reserved words</p>

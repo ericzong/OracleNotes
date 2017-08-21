@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Eric Zong">
+<title></title>
+<link type="text/css" rel="stylesheet" href="../css/common.css"  />
+<link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
+<link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
+
+<script type="text/javascript" src="../js/title.js"></script>
+<script type="text/javascript" src="../js/highlight.pack.js"></script>
+<script type="text/javascript">hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+
+  <h1>定义</h1>
+  
+  <h2>普通游标</h2>
+  
+  <pre class="code"><code class="sql">
+cursor &lt;CursorName> is &lt;SubQuery>;</code></pre>
+  
+  <h2>更新游标</h2>
+  
+  <p>游标定义时，使用 for update 子句指定游标是可更新的，并可用 of 子句明确指定哪些字段可更新。</p>
+  <pre class="code"><code>
+cursor &lt;CursorName> is
+  select ...
+    for update [of &lt;ColumnNames>];</code></pre>
+    
+  <p>更新语句中，使用 where current of &lt;CursorName> 匹配游标当前记录。</p>
+  <pre class="code"><code>
+update &lt;TableName>
+  set ...
+  where current of &lt;CursorName>;</code></pre>
+  
+  <h2>参数游标</h2>
+  
+  <pre class="code"><code class="sql">
+cursor &lt;CursorName> ( &lt;ParameterName> &lt;DataType>[, ...] ) is
+  select ... from ... where ... = &lt;ParameterName> ... ;</code></pre>
+  
+  <h1>循环读取</h1>
+  
+  <h2>手动 fetch</h2>
+  
+  <h3>普通 loop 循环</h3>
+  <pre class="code"><code class="sql">
+declare
+  ...
+  &lt;CursorRowName> &lt;CursorName>%rowtype; -- 声明游标记录类型的变量
+begin
+  open &lt;CursorName>; -- 打开游标
+  loop
+    fetch &lt;CursorName> into &lt;CursorRowName>;
+    exit when &lt;CursorName>%notfound;
+    ...
+  end loop;
+  close &lt;CursorName>;
+end;</code></pre>
+
+  <h3>while 循环</h3>
+  <pre class="code"><code>
+...
+  fetch &lt;CursorName> into &lt;CursorRowName>;
+  while &lt;CursorName>%found loop
+    ...
+    fetch &lt;CursorName> into &lt;CursorRowName>;
+  end loop;
+...</code></pre>
+
+  <h2>for each 循环</h2>
+  
+  <pre class="code"><code>
+for &lt;CursorRowName> in &lt;CursorName> loop
+  ...
+end loop;</code></pre>
+
+  <h1>游标变量</h1>
+  
+  <table>
+    <tr>
+      <th>名称</th>
+      <th>类型</th>
+      <th>默认值</th>
+    </tr>
+    <tr>
+      <td>sql%found</td>
+      <td>布尔类型</td>
+      <td>null</td>
+    </tr>
+    <tr>
+      <td>sql%notfound</td>
+      <td>布尔类型</td>
+      <td>null</td>
+    </tr>
+    <tr>
+      <td>sql%rowcount</td>
+      <td>数值类型</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>sql%isopen</td>
+      <td>布尔类型</td>
+      <td></td>
+    </tr>
+  </table>
+  
+  <p>游标是维护查询结果的内存中的一个区域。游标在运行 DML 时打开，完成后关闭。</p>
+  <p>当运行 DML 时，PL/SQL 打开一个内建游标并处理结果。</p>
+  <p>当执行一条 DML 后，DML 语句的结果保存在以上 4 个游标属性中，它们用于控制程序流程或者了解程序的状态。</p>
+  <p>隐式游标只使用 sql%found、sql%notfound、sql%rowcount 三个属性。</p>
+  
+  <h3>sql%found vs. sql%notfound</h3>
+  <p class="next">执行任何 DML 前两者的值都是 null，执行后，下列情况下 sql%found 的属性值将是 true：</p>
+  <ul>
+    <li>insert</li>
+    <li>delete 和 update 至少一行被操作</li>
+    <li>select into 至少返回一行</li>
+  </ul>
+  <p>sql%notfound 常作为检索循环退出的条件。它的值与 sql%found 相反。</p>
+  
+  <h3>sql%rowcount</h3>
+  <p>sql%rowcount 返回游标所检索数据库行的数量。</p>
+  <p>执行 DML 之前，sql%rowcount 的值为 0。对于 select into 语句，执行成功，值为 1；如果没有成功或者没有操作（如 update、insert、delete 为 0 条），值为 0。</p>
+  
+  <h3>sql%isopen</h3>
+  <p>如果游标打开，则为 true；否则为 false。对于隐式游标而言，总是false，这是因为隐式游标在 DML 执行时打开，结束时就立即关闭。</p>
+
+  <h1>异常处理</h1>
+  
+  <pre class="code"><code>
+exception
+  when no_data_found then
+    ...
+  when too_many_rows then
+    ...</code></pre>
+  
+</body>
+</html>

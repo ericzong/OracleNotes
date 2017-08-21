@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="author" content="Eric Zong">
+<title>约束</title>
+<link type="text/css" rel="stylesheet" href="../css/common.css"  />
+<link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
+<link type="text/css" rel="stylesheet" href="../css/title.css"  />
+<link type="text/css" rel="stylesheet" href="../css/tree.css" />
+<link type="text/css" rel="stylesheet" href="../css/highlight.css" />
+
+<script type="text/javascript" src="../js/title.js"></script>
+<script type="text/javascript" src="../js/highlight.pack.js"></script>
+<script type="text/javascript">hljs.initHighlightingOnLoad();</script>
+</head>
+<body>
+  
+  <h1>随表定义创建</h1>
+  
+  <table>
+    <tr>
+      <th>约束类型</th>
+      <th>定义方式</th>
+      <th>语法</th>
+    </tr>
+    <tr>
+      <th rowspan="2">通用</th>
+      <th>定义列时定义</th>
+      <td>
+        <pre><code class="sql">
+create table &lt;TableName>
+(
+  &lt;ColumnName> &lt;ColumnType> [constraint &lt;ConstraintName>] &lt;SubClause>
+  [, ...]
+);</code></pre>
+      </td>
+    </tr>
+    <tr>
+      <th>与列并行定义</th>
+      <td>
+        <pre><code class="sql">
+create table &lt;TableName>
+(
+  &lt;ColumnDefinition>[, ...]
+  [constraint &lt;ConstraintName>] &lt;SubClause>
+);</code></pre>
+      </td>
+    </tr>
+    <tr>
+      <th rowspan="2">主键</th>
+      <th>定义列时定义</th>
+      <td>SubClause：primary key</td>
+    </tr>
+    <tr>
+      <th>与列并行定义</th>
+      <td>SubClause：primary key(&lt;ColumnNames>)</td>
+    </tr>
+    <tr>
+      <th rowspan="2">外键</th>
+      <th>定义列时定义</th>
+      <td>SubClause：references &lt;TableName>[(&lt;ColumnName>)]</td>
+    </tr>
+    <tr>
+      <th>与列并行定义</th>
+      <td>SubClause：foreign key(&lt;ColumnNames>) references &lt;TableName>[(&lt;ColumnNames>)]</td>
+    </tr>
+    <tr>
+      <th rowspan="2">唯一</th>
+      <th>定义列时定义</th>
+      <td>SubClause：unique</td>
+    </tr>
+    <tr>
+      <th>与列并行定义</th>
+      <td>SubClause：unique(&lt;ColumnNames>)</td>
+    </tr>
+    <tr>
+      <th rowspan="2">检查</th>
+      <th>定义列时定义</th>
+      <td rowspan="2">SubClause：check(...)</td>
+    </tr>
+    <tr>
+      <th>与列并行定义</th>
+    </tr>
+    <tr>
+      <th>非空</th>
+      <th>定义列时定义</th>
+      <td>SubClause：not null</td>
+    </tr>
+    <tr>
+      <th>默认</th>
+      <th>定义列时定义</th>
+      <td>SubClause：default &lt;Value> (*不能定义约束名)</td>
+    </tr>
+  </table>
+  
+  <h1>独立创建</h1>
+  
+  <table>
+    <tr>
+      <th>约束类型</th>
+      <th>定义方式</th>
+      <th>语法</th>
+    </tr>
+    <tr>
+      <th rowspan="2">通用</th>
+      <th>修改单列</th>
+      <td>
+        <pre><code>
+alter table &lt;TableName> modify(&lt;ColumnName> [constraint &lt;ConstraintName>] &lt;SubClause>);</code></pre>
+      </td>
+    </tr>
+    <tr>
+      <th>单/多列</th>
+      <td>alter table &lt;TableName> add [constraint &lt;ConstraintName>] &lt;SubClause>;</td>
+    </tr>
+    <tr>
+      <th rowspan="2">主键</th>
+      <th>单列主键（修改列）</th>
+      <td>SubClause：primary key</td>
+    </tr>
+    <tr>
+      <th>单/多列主键</th>
+      <td>SubClause：primary key(&lt;ColumnNames)</td>
+    </tr>
+    <tr>
+      <th rowspan="2">外键</th>
+      <th>单列外键（修改列）</th>
+      <td>SubClause：references &lt;TableName>[(&lt;ColumnName>)]</td>
+    </tr>
+    <tr>
+      <th>单/多列外键</th>
+      <td>SubClause：foreign key(&lt;ColumnNames>) references &lt;TableName>[(&lt;ColumnNames>)]</td>
+    </tr>
+    <tr>
+      <th rowspan="2">唯一</th>
+      <th>单列唯一（修改列）</th>
+      <td>SubClause：unique</td>
+    </tr>
+    <tr>
+      <th>单/多列唯一</th>
+      <td>SubClause：unique(&lt;ColumnNames>)</td>
+    </tr>
+    <tr>
+      <th rowspan="2">检查</th>
+      <th>当前列检查（修改列）</th>
+      <td rowspan="2">SubClause：check(...)</td>
+    </tr>
+    <tr>
+      <th>单/多列检查</th>
+    </tr>
+    <tr>
+      <th>非空</th>
+      <th>单列</th>
+      <td>SubClause：not null</td>
+    </tr>
+    <tr>
+      <th>默认</th>
+      <th>单列</th>
+      <td>SubClause：default &lt;Value> (*不能定义约束名)</td>
+    </tr>
+  </table>
+  
+  <h1>启用/禁用</h1>
+  
+  <table>
+    <tr>
+      <th>约束类型</th>
+      <th>语法</th>
+    </tr>
+    <tr>
+      <th>通用</th>
+      <td>
+        <pre><code class="sql">
+alter table &lt;TableName> &lt;enable|disable> constraint &lt;ConstraintName>;
+alter table &lt;TableName> modify constraint &lt;ConstraintName> &lt;enable|disable>;</code></pre>
+      </td>
+    </tr>
+    <tr>
+      <th>主键</th>
+      <td>
+        <p>通用</p>
+        <pre><code class="sql">
+alter table &lt;TableName> &lt;enable|disable> primary key;</code></pre>
+      </td>
+    </tr>
+    <tr>
+      <th>外键</th>
+      <td rowspan="4">通用</td>
+    </tr>
+    <tr>
+      <th>唯一</th>
+    </tr>
+    <tr>
+      <th>检查</th>
+    </tr>
+    <tr>
+      <th>非空</th>
+    </tr>
+    <tr>
+      <th>默认</th>
+      <td>-</td>
+    </tr>
+  </table>
+  
+  <h1>重命名</h1>
+  
+  <table>
+    <tr>
+      <th>约束类型</th>
+      <th>语法</th>
+    </tr>
+    <tr>
+      <th>通用</th>
+      <td>
+        <pre><code class="sql">
+alter table &lt;TableName> rename constraint &lt;ConstraintName> to &lt;NewConstraintName>;</code></pre>
+      </td>
+    </tr>
+    <tr>
+      <th>主键</th>
+      <td rowspan="5">通用</td>
+    </tr>
+    <tr>
+      <th>外键</th>
+    </tr>
+    <tr>
+      <th>唯一</th>
+    </tr>
+    <tr>
+      <th>检查</th>
+    </tr>
+    <tr>
+      <th>非空</th>
+    </tr>
+    <tr>
+      <th>默认</th>
+      <td>-</td>
+    </tr>
+  </table>
+  
+  <h1>删除</h1>
+  
+  <table>
+    <tr>
+      <th>约束类型</th>
+      <th>语法</th>
+    </tr>
+    <tr>
+      <th>通用</th>
+      <td>
+        <pre><code class="sql">
+alter table &lt;TableName> drop constraint &lt;ConstraintName>;</code></pre>
+      </td>
+    </tr>
+    <tr>
+      <th>主键</th>
+      <td>
+        <pre><code class="sql">
+alter table &lt;TableName> drop primary key;</code></pre>
+      </td>
+    </tr>
+    <tr>
+      <th>外键</th>
+      <td rowspan="3">通用删除</td>
+    </tr>
+    <tr>
+      <th>唯一</th>
+    </tr>
+    <tr>
+      <th>检查</th>
+    </tr>
+    <tr>
+      <th>非空</th>
+      <td>
+        <p>通用删除</p>
+        <pre><code class="sql">
+alter table &lt;TableName> modify(&lt;ColumnName> null);</code></pre>
+      </td>
+    </tr>
+    <tr>
+      <th>默认</th>
+      <td>
+        <pre><code class="sql">
+alter table &lt;TableName> modify &lt;ColumnName> default null;</code></pre>
+      </td>
+    </tr>
+  </table>
+  
+  <h1>数据字典</h1>
+  
+  <p>&lt;user|all|dba>_constraints</p>
+  
+  <h1>说明</h1>
+  
+  <p>主键=唯一+非空，主键侧重标记记录唯一性，唯一侧重标记列（组合）唯一性。</p>
+  <p>非空其实是一种特殊的检查。</p>
+  <p>严格来说默认并非一种约束，一方面它不具备直观约束性，另一方面它也没有约束对象与之对应。故其不能重命名及启用、禁用。</p>
+  
+</body>
+</html>
