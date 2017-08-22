@@ -16,9 +16,11 @@
 </head>
 <body>
   
-  <p>Oracle 中的单引号内为字符串，双引号则用于标识对象名称。</p>
+  <h1>数据库概述</h1>
   
-  <h1>数据库完整性</h1>
+  <p>数据库软件应称为数据库管理系统（DBMS），数据库是通过 DBMS 创建和操纵的容器。</p>
+  
+  <h2>数据库完整性</h2>
   
   <ul>
     <li>实体完整性（Entity Integrity）：表中行的完整性，主键</li>
@@ -27,15 +29,17 @@
     <li>用户定义完整性（User-defined Integrity）：用户自定义的约束，检查约束</li>
   </ul>
   
-  <h1>SQL 命令功能分类</h1>
+  <h2>SQL 命令功能分类</h2>
   
   <ul>
     <li>数据检索：select</li>
     <li>数据操作（DML，data manipulation language）：insert、update、delete</li>
-    <li>数据定义（DDL，data definition language）：</li>
+    <li>数据定义（DDL，data definition language）：create、alter、drop、rename、truncate</li>
+    <li>数据控制（DCL，data control language）：grant、revoke</li>
+    <li>事务处理：commit、rollback、savepoint、set transaction</li>
   </ul>
   
-  <h1>Oracle 四类可存储的程序</h1>
+  <h2>Oracle 四类可存储的程序</h2>
   
   <ul>
     <li>函数，是命名的、存储在数据库中的 PL/SQL 程序块。函数接受 0 个或多个输入参数，有一个返回值，返回值的数据类型在创建函数时定义。</li>
@@ -49,6 +53,16 @@
       包由两个部分组成：规范和包主体（body）。规范描述变量、常量、游标、子程序，包体完全定义子程序和游标。
     </li>
   </ul>
+  
+  <h1>数据库对象</h1>
+  
+  <h2>表</h2>
+  
+  
+  
+  <h1>杂项</h1>
+  
+  <p>Oracle 中的单引号内为字符串，双引号则用于标识对象名称。</p>
   
 </body>
 </html>
