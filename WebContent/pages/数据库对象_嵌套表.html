@@ -17,14 +17,13 @@
 <body>
   
   <pre class="code"><code>
-create type class_type as object
+-- 自定义类型
+create or replace type &lt;TypeName> as object
 (
-  id         number,
-  class_name varchar2(32)
-)
-;
-
-create type class_name as table of class_type;
+  &lt;ColumnDefinition>[, ...]
+);
+-- 自定义表类型
+create or replace type &lt;TableTypeName> as table of &lt;TypeName>;
 
 create table grade(id number, grade_name varchar2(32), classes class_name) nested table classes store as ts_classes;
 
