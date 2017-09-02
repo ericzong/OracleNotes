@@ -107,6 +107,128 @@ exception
     dbms_sql.close_cursor(v_cursor); --关闭游标 
     rollback; 
 end; </code></pre>
+
+  <h1>函数</h1>
+  
+  <h2>可变数组</h2>
+  
+  <p>通常，使用嵌套表来实现可变数组。</p>
+  <p>比如要实现一个字符串数组。</p>
+  <p>先声明一个数据记录对象类型，用以存储行数据。</p>
+  <pre class="code"><code>
+create or replace type stringobject as object
+(
+  X_ number,
+  Y_ varchar2(4000)
+)</code></pre>
+  <p>再声明对应的嵌套表类型，作为数组类型。</p>
+  <pre class="code"><code>
+create or replace type stringarray as table of stringobject;</code></pre>
+  <p>stringarray 即为定义的数组类型了，其中 X_ 代表索引，Y_ 代表字符串元素。</p>
+  <p>最常见的操作便是：定义一个函数，将指定分隔符分隔的字符串分解为字符串数组。下面以管道方式编写该操作函数。</p>
+  <pre class="code"><code>
+create or replace function split(p_string varchar2, p_seperator varchar2 default ',', p_null_value varchar2 default ' ')
+  return stringarray
+  pipelined as
+  r_array stringobject := stringobject(null, null);
+  v_idx integer;
+  v_no integer := 1;
+  v_str varchar2(4000) := p_string;
+  v_seperator_length integer := length(p_seperator);
+begin
+  if instr(v_str, p_seperator, 1, 1) = 1 then
+    v_str := p_null_value || v_str;
+  end if;  
+  
+  if instr(v_str, p_seperator, -1, 1) + v_seperator_length - 1 = length(v_str) then
+    v_str := v_str || p_null_value;
+  end if;
+
+  loop
+    v_idx := instr(v_str, p_seperator);
+    exit when v_idx = 0;
+    
+    r_array.x_ := v_no;
+    r_array.y_ := substr(v_str, 1, v_idx - 1);
+    v_str := substr(v_str, v_idx + v_seperator_length);
+    pipe row(r_array);
+    v_no := v_no + 1;
+  end loop;
+  r_array.x_ := v_no;
+  r_array.y_ := v_str;
+  pipe row(r_array);
+  return;
+end split;</code></pre>
+  <div class="ext">
+    注意：以管道方式定义的函数是以“pipelined as”开始声明部分的，而非“is”；
+    并使用“pipe row()”输出行数据；最后只以“return”结束，而不指定返回的值。
+  </div>
+  <p>利用该函数我们可以使用如下查询语句将字符串分解为数组。</p>
+  <pre class="code"><code>
+SELECT * FROM TABLE(SPLIT('TOTAL;BIN0;BIN1;BIN2', ';'));</code></pre>
+  <p>这将得到如下的结果：</p>
+  <table>
+    <tr>
+      <th>X_</th>
+      <th>Y_</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>TOTAL</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>BIN0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>BIN1</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>BIN2</td>
+    </tr>
+  </table>
+  <p>需要注意的是，这种使用管道定义的函数被称为“表函数（table function）”，可以被用于查询中，
+  但不能用于 PL/SQL 程序中，即 PL/SQL 程序中不能将该函数的返回值赋值给数组变量。</p>
+  <pre class="code"><code>
+v_strs := SPLIT('TOTAL;BIN0;BIN1;BIN2', ';'); -- 这行代码会引起编译错误</code></pre>
+  <p>如果需要在 PL/SQL 程序中使用该种函数，则应在“select into”中使用，或者干脆不要使用管道方式定义。</p>
+  <pre class="code"><code>
+CREATE OR REPLACE FUNCTION splitstr(p_string varchar2, p_seperator varchar2 default ',', p_null_value varchar2 default ' ')
+   RETURN stringarray
+IS
+  v_idx integer;
+  v_str varchar2(4000) := p_string;
+  v_seperator_length integer := length(p_seperator);
+  v_strs stringarray := stringarray();
+BEGIN
+  if instr(v_str, p_seperator, 1, 1) = 1 then
+    v_str := p_null_value || v_str;
+  end if;  
+  
+  if instr(v_str, p_seperator, -1, 1) + v_seperator_length - 1 = length(v_str) then
+    v_str := v_str || p_null_value;
+  end if;
+  
+  loop
+    v_idx := instr(v_str, p_seperator);
+    exit when v_idx = 0;
+    
+    v_strs.extend;
+    v_strs(v_strs.count) := stringobject(v_strs.count, substr(v_str, 1, v_idx - 1));
+    v_str := substr(v_str, v_idx + v_seperator_length);
+    
+  end loop;
+  
+  v_strs.extend;
+  v_strs(v_strs.count) := stringobject(v_strs.count, v_str);
+
+  RETURN v_strs;
+END splitstr;</code></pre>
+  <div class="ext">
+    注意：数组对象的声明；行的扩展；行数据的构造等。
+  </div>
   
   <h1>附录</h1>
   <p>查询 PL/SQL 和 SQL 中的保留字清单：help reserved words</p>
