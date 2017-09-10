@@ -15,57 +15,114 @@
 <script type="text/javascript">hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
-  <h1>Oracle锁类型</h1>
+
+  <h1>概述</h1>
+  
+  <h2>关于锁</h2>
+  <p>事务（Transactions），是关系数据库最小的恢复和交易单位，具有 ACID 特征<sup>*</sup>。为确保并发用户在存取同一数据库对象时的正确性<sup>*</sup>，数据库中引入并发（锁）机制。</p>
+  <div class="ext">
+    <p>事务 ACID 特征：原子性、一致性、隔离性、永久性。</p>
+    <p>数据库对象存取正确性：无丢失更新、可重复读、不读“脏”数据、无“幻像”读。</p>
+  </div>
+  
+  <p>基本的锁类型有两种：排它锁（Exclusive locks，记为 X 锁）和共享锁（Share locks，记为 S 锁）。</p>
+  <div class="ext">
+    <dl>
+      <dt>排它锁</dt>
+      <dd>若事务 T 对数据 D 加 X 锁，则其他任何事务都不能再对 D 加任何类型的锁，直至 T 释放 D 上的 X 锁；一般要求在修改数据前要向该数据加排它锁，所以排它锁又称为写锁。</dd>
+      <dt>共享锁</dt>
+      <dd>若事务 T 对数据 D 加 S 锁，则其他事务只能对 D 加 S 锁，而不能加 X 锁，直至 T 释放 D 上的 S 锁；一般要求在读取数据前要向该数据加共享锁，所以共享锁又称为读锁。</dd>
+    </dl>
+  </div>
+  
+  <h2>悲观封锁 vs. 乐观封锁</h2>
+  <p>悲观封锁，即锁在用户修改之前就发挥作用，使用“select ... for update [nowait]”语句加锁。</p>
+  <p>此时，其他事务对结果集进行 DML 操作会发生阻塞，进行 DDL 操作会报错（ORA-00054:resource busy and acquire with nowait specified）。</p>
+  <p>乐观封锁，返回的结果集存在被其他事务更改的可能，因此通常建议使用悲观封锁。</p>
+  
+  <h2>阻塞</h2>
+  <p>当一个会话保持另一个会话正在请求的资源上的锁定时，就会发生阻塞。被阻塞的会话将一直挂起，直至持有锁的会话放弃锁定的资源为止。</p>
+  <p>常见会产生阻塞的 DML 语句有：insert、update、delete、select ... for update。</p>
+  <div class="ext">
+    <p>insert 发生阻塞的唯一情况是 2 个会话同时试图向表中插入相同数据（即主键相同）。</p>
+    <p>select ... for update nowait 语句可避免发生阻塞，而是直接报错。</p>
+  </div>
+  
+  <h2>死锁</h2>
+  <p>当两个会话希望持有对方的资源时就会发生死锁。</p>
+  <p>死锁时，Oracle 将以牺牲（事务回滚）一个会话作为代价，另一个会话继续执行。</p>
+  
+  <h1>分类</h1>
+  
+  <p>根据保护对象的不同，Oracle 数据库锁可分为以下几大类：</p>
   <ul>
-    <li>DML锁（dada locks，数据锁）：用于保护数据的完整性；</li>
-    <li>DDL锁（dictionary locks，字典锁）：用于保护数据库对象的结构，如表、索引等的结构定义；</li>
-    <li>内部锁和闩（internal locks and latches）：保护数据库的内部结构。</li>
+    <li>DML lock（data locks，数据锁）：用于保护数据的完整性；</li>
+    <li> DDL lock（dictionary locks，字典锁）：用于保护数据库对象的结构（例如表、视图、索引的结构定义）;</li>
+    <li>Internal locks &amp; latches（内部锁与闩）：保护内部数据库结构；</li>
+    <li>Distributed locks（分布式锁）：用于 OPS （并行服务器）中；</li>
+    <li>PCM locks（并行高速缓存管理锁）：用于 OPS （并行服务器）中。</li>
   </ul>
-  <p>DML 锁的目的在于保证并发情况下的数据完整性。在 Oracle 数据库中，DML 锁主要包括 TM 锁和 TX 锁，其中 TM 锁称为表级锁，TX 锁称为事务锁或行级锁。</p>
-  <p>当Oracle 执行 DML 语句时，系统自动在所要操作的表上申请 TM 类型的锁。当 TM 锁获得后，系统再自动申请 TX 类型的锁，并将实际锁定的数据行的锁标志位进行置位。这样在事务加锁前检查TX锁相容性时就不用再逐行检查锁标志，而只需检查TM锁模式的相容性即可，大大提高了系统的效率。TM锁包括了SS、SX、S、X 等多种模式，在数据库中用0－6来表示。不同的SQL操作产生不同类型的TM锁。</p>
-  <p>在数据行上只有X锁（排他锁）。在 Oracle数据库中，当一个事务首次发起一个DML语句时就获得一个TX锁，该锁保持到事务被提交或回滚。当两个或多个会话在表的同一条记录上执行DML语句时，第一个会话在该条记录上加锁，其他的会话处于等待状态。当第一个会话提交后，TX锁被释放，其他会话才可以加锁。</p>
-  <p>当Oracle数据库发生TX锁等待时，如果不及时处理常常会引起Oracle数据库挂起，或导致死锁的发生，产生ORA-60的错误。这些现象都会对实际应用产生极大的危害，如长时间未响应，大量事务失败等。</p>
+  <p>除前两种锁外，其他锁都属于系统锁，通常不需要关注。</p>
+  <p>最主要的锁是 DML 锁，从封锁粒度（封锁对象大小）的角度看，Oracle DML 锁共有两个层次，即行级锁和表级锁。</p>
   
-  <h1>悲观封锁和乐观封锁</h1>
-  <h2>悲观封锁</h2>
-  <p>锁在用户修改之前就发挥作用：</p>
-  <p>select ... for update (nowait)</p>
-  <p>Select * from tab1 for update</p>
-  <p>用户发出这条命令之后，oracle将会对返回集中的数据建立行级封锁，以防止其他用户的修改。</p>
-  <p>如果此时其他用户对上面返回结果集的数据进行dml或ddl操作都会返回一个错误信息或发生阻塞。</p>
-  <p>1. 对返回结果集进行update或delete操作会发生阻塞。</p>
-  <p>2. 对该表进行ddl操作将会报：Ora-00054:resource busy and acquire with nowait specified。</p>
-  <p class="bold">原因分析</p>
-  <p>此时Oracle已经对返回的结果集上加了排它的行级锁，所有其他对这些数据进行的修改或删除操作都必须等待这个锁的释放，产生的外在现象就是其他的操作将发生阻塞，直到这个操作commit或rollback。</p>
-  <p>同样这个查询的事务将会对该表加表级锁，不允许对该表的任何ddl操作，否则将会报出ora-00054错误：:resource busy and acquire with nowait specified。</p>
+  <h2>Oracle 的 TX 锁</h2>
   
-  <h2>乐观封锁</h2>
-  <p>乐观的认为数据在select出来到update进取并提交的这段时间数据不会被更改。这里面有一种潜在的危险就是由于被选出的结果集并没有被锁定，是存在一种可能被其他用户更改的可能。因此Oracle仍然建议使用悲观封锁，因为这样会更安全。</p>
+  <p>TX 锁是行级锁、事务锁，但其本义是事务（Transaction）。当一个事务第一次执行 insert、update、delete、select ... for update 时，获得一个 TX 锁，
+  直到该事务结束（提交或回滚）时才释放。故一个 TX 锁可以对应多个被该事务锁定的数据行。</p>
+  <p>在 Oracle 的每行数据上，都有一个标志位来表示该行数据是否被锁定。一旦被置位，就表明该行数据被加 X 锁，Oracle 在数据行上没有 S 锁。</p>
+  <div class="ext">
+    <p>Oracle 的行级锁不在内存中维护（DB2 建立一个链表来维护每一行被加锁的数据），因此维护开销小，故而不需要进行锁升级
+    （DB2 等数据库可能会因为锁数量、内存不够而进行锁升级）。</p>
+  </div>
   
-  <h1>阻塞</h1>
-  <p>定义：当一个会话保持另一个会话正在请求的资源上的锁定时，就会发生阻塞。被阻塞的会话将一直挂起，直至持有锁的会话放弃锁定的资源为止。4个常见的DML语句会生产阻塞：</p>
-  <pre>
-insert
-update
-delete
-select… for update</pre>
-  <p>Insert发生阻塞的唯一情况就是用户拥有一个建有主键约束的表。当2个的会话同时试图向表中插入相同的数据时，其中的一个会话将被阻塞，直到另外一个会话提交或会滚。一个会话提交时，另一个会话将收到主键重复的错误。回滚时，被阻塞的会话将继续执行。</p>
-  <p>UPDATE 和DELETE当执行Update和delete操作的数据行已经被另外的会话锁定时，将会发生阻塞，直到另一个会话提交或会滚。</p>
-  <p>当一个用户发出select..for update的操作准备对返回的结果集进行修改时，如果结果集已经被另一个会话锁定，就会发生阻塞。需要等另一个会话结束之后才可继续执行。可以通过发出 select… for update nowait的语句来避免发生阻塞，如果资源已经被另一个会话锁定，则会返回以下错误：Ora-00054:resource busy and acquire with nowait specified.</p>
-  <h1>死锁-deadlock</h1>
-  <p>定义：当两个用户希望持有对方的资源时就会发生死锁。</p>
-  <p>即两个用户互相等待对方释放资源时,oracle认定为产生了死锁,在这种情况下,将以牺牲一个用户作为代价,另一个用户继续执行,牺牲的用户的事务将回滚。</p>
-  <p>例子：</p>
-  <p>1. 用户1对A表进行Update，没有提交。</p>
-  <p>2. 用户2对B表进行Update，没有提交。（此时双方不存在资源共享的问题。）</p>
-  <p>3. 如果用户2此时对A表作update,则会发生阻塞，需要等到用户一的事物结束。</p>
-  <p>4. 如果此时用户1又对B表作update，则产生死锁。此时Oracle会选择其中一个用户进行会滚，使另一个用户继续执行操作。</p>
-  <p>起因：</p>
-  <p>Oracle的死锁问题实际上很少见，如果发生，基本上都是不正确的程序设计造成的，经过调整后，基本上都会避免死锁的发生。</p>
+  <h2>TM 锁理论</h2>
   
-  <h1>DML锁分类表</h1>
+  <h3>意向锁的引出</h3>
+  
+  <p>表由行组成，当向某个表加锁时，需要同时检查申请锁与已有表级锁和已有行级锁的相容性。
+  但是，当数据很多时，逐行检查锁标志的开销将很大，系统性能将受到影响。
+  为了解决这个问题，可以在表级引入新的锁类型来表示其所属行的加锁情况，既而引出“意向锁”的概念。</p>
+  
+  <dl>
+    <dt>意向锁</dt>
+    <dd>如果对一个结点加意向锁，则说明该结点的下层结点正在被加锁；对任一结点加锁时，必须先对它的上层结点加意向锁。</dd>
+  </dl>
+  <p>有了意向锁，事务对表加锁时，就不再需要检查表中的每行记录的锁标志位，大大提升效率。</p>
+  
+  <h3>意向锁的类型</h3>
+  
+  <p>两种基本的锁类型（S 锁、X 锁）自然派生出两种意向锁：</p>
+  <dl>
+    <dt>意向共享锁（Intent Share Lock，IS 锁）</dt>
+    <dd>如果要对一个数据库对象加 S 锁，首先要对其上级结点加 IS 锁，表示它的后裔结点拟（意向）加 S 锁。</dd>
+    <dt>意向排它锁（Intent Exclusive Lock，IX 锁）</dt>
+    <dd>如果要对一个数据库对象加 X 锁，首先要对其上级结点加 IX 锁，表示它的后裔结点拟（意向）加 X 锁。</dd>
+  </dl>
+  
+  <p>显然，意向锁和基本锁理论上可以有 4 种组合，但除 S + IX 外，其他组合都没有使锁强度（指对其他锁的排斥程度）提高。因此，还可以引入一种锁。</p>
+  
+  <dl>
+    <dt>共享意向排它锁（Shared Intent Exclusive Lock，SIX 锁）</dt>
+    <dd>如果对一个数据库对象加 SIX 锁，表示对它加 S 锁，再加 IX 锁，即 SIX=S+IX。</dd>
+  </dl>
+  <div class="textarea">
+    <p>事务对某个表加 SIX 锁，表示要读整个表，同时会更新个别行。</p>
+  </div>
+  
+  <p>因此，数据库对象上所加的锁类型就可能有 5 种：S、X、IS、IX、SIX。</p>
+  
+  <p>申请封锁时应按自上而下的次序进行；释放封锁时则应按自下而上的次序进行；具有意向锁的多粒度封锁方法提高了系统的并发度，减少了加锁和解锁的开销。</p>
+  
+   <h2>Oracle 的 TM 锁</h2>
+   
+   <p>Oracle 的 DML 锁（数据锁）正是采用了上面提到的多粒度封锁方法，其行级锁只有一种（X 锁），但 TM 锁（表级锁）共有 5 种：
+   共享锁（S 锁）、排它锁（X 锁）、行级共享锁（RS 锁）、行级排它锁（RX 锁）、共享行级排它锁（SRX 锁），分别与上述 S、X、IS、IX、SIX 对应。</p>
+   <div class="ext">
+     <p>注意：Oracle 在行级只提供 X 锁，所以与 RS 锁（通过 select ... for update 语句获得）对应的行级锁也是 X 锁，这与理论上的 IS 锁有区别。</p>
+   </div>
+   
   <table>
-    <caption>表1 Oracle的TM锁类型</caption>
+    <caption>Oracle 的 TM 锁类型</caption>
     <thead>
       <tr>
         <th>锁模式</th>
@@ -89,14 +146,14 @@ select… for update</pre>
       </tr>
       <tr>
         <td>2</td>
-        <td>SS(Row-S)</td>
+        <td>RS(Row-S)</td>
         <td>行级共享锁，其他对象只能查询这些数据行</td>
         <td>Select for update、Lock for update、Lock row share</td>
       </tr>
       <tr>
         <td>3</td>
-        <td>SX(Row-X)</td>
-        <td>行级排它锁，在提交前不允许做DML操作</td>
+        <td>RX(Row-X)</td>
+        <td>行级排它锁，在提交前不允许做 DML 操作</td>
         <td>Insert、Update、Delete、Lock row share</td>
       </tr>
       <tr>
@@ -107,7 +164,7 @@ select… for update</pre>
       </tr>
       <tr>
         <td>5</td>
-        <td>SSX(S/Row-X)</td>
+        <td>SRX(S/Row-X)</td>
         <td>共享行级排它锁</td>
         <td>Lock share row exclusive</td>
       </tr>
@@ -119,15 +176,165 @@ select… for update</pre>
       </tr>
     </tbody>
   </table>
-
+   
+   <dl>
+     <dt>锁的兼容性</dt>
+     <dd>当一个应用程序在表（行）上加上某种锁后，其他应用程序是否能够在表（行）上加上相应的锁，如果能够加上，说明这两种锁是兼容的，
+     否则说明这两种锁不兼容，不能对同一数据对象并发存取。</dd>
+   </dl>
+   
+   <table>
+     <caption>Oracle 数据库 TM 锁相容矩阵</caption>
+     <tbody>
+       <tr>
+         <th>T1 \ T2</th>
+         <th>S</th>
+         <th>X</th>
+         <th>RS</th>
+         <th>RX</th>
+         <th>SRX</th>
+         <th>-</th>
+       </tr>
+       <tr>
+         <th>S</th>
+         <td>Y</td>
+         <td>N</td>
+         <td>Y</td>
+         <td>N</td>
+         <td>N</td>
+         <td>Y</td>
+       </tr>
+       <tr>
+         <th>X</th>
+         <td>N</td>
+         <td>N</td>
+         <td>N</td>
+         <td>N</td>
+         <td>N</td>
+         <td>Y</td>
+       </tr>
+       <tr>
+         <th>RS</th>
+         <td>Y</td>
+         <td>N</td>
+         <td>Y</td>
+         <td>Y</td>
+         <td>Y</td>
+         <td>Y</td>
+       </tr>
+       <tr>
+         <th>RX</th>
+         <td>N</td>
+         <td>N</td>
+         <td>Y</td>
+         <td>Y</td>
+         <td>N</td>
+         <td>Y</td>
+       </tr>
+       <tr>
+         <th>SRX</th>
+         <td>N</td>
+         <td>N</td>
+         <td>Y</td>
+         <td>N</td>
+         <td>N</td>
+         <td>Y</td>
+       </tr>
+       <tr>
+         <th>-</th>
+         <td>Y</td>
+         <td>Y</td>
+         <td>Y</td>
+         <td>Y</td>
+         <td>Y</td>
+         <td>Y</td>
+       </tr>
+     </tbody>
+   </table>
+   
+   <div class="ext">
+     <ul>
+       <li><p>select ... for update，系统自动在表上申请表级 RS  锁，TX 锁，并置数据行锁标志位；</p></li>
+       <li><p>insert、update、delete，系统自动在表上申请表级 RX 锁，TX 锁，并置数据行锁标志位；</p></li>
+       <li><p>lock table，指定获得某种类型的 TM 锁。</p></li>
+     </ul>
+   </div>
+   
+   <table>
+     <caption>Oracle 数据库 TM 锁小结</caption>
+     <tbody>
+       <tr>
+         <th>SQL  语句</th>
+         <th>表锁模式</th>
+         <th>允许的锁模式</th>
+       </tr>
+       <tr>
+         <td>select</td>
+         <td>无</td>
+         <td>S、X、RS、RX、SRX</td>
+       </tr>
+       <tr>
+         <td>insert into</td>
+         <td>RX</td>
+         <td>RS、RX</td>
+       </tr>
+       <tr>
+         <td>update</td>
+         <td>RX</td>
+         <td>RS、RX</td>
+       </tr>
+       <tr>
+         <td>delete</td>
+         <td>RX</td>
+         <td>RS、RX</td>
+       </tr>
+       <tr>
+         <td>select ... for update</td>
+         <td>RS</td>
+         <td>S、RS、RX、SRX</td>
+       </tr>
+       <tr>
+         <td>lock table &lt;TableName>in row share mode</td>
+         <td>RS</td>
+         <td>S、RS、RX、SRX</td>
+       </tr>
+       <tr>
+         <td>lock table &lt;TableName>in row exclusive mode</td>
+         <td>RX</td>
+         <td>RS、RX</td>
+       </tr>
+       <tr>
+         <td>lock table &lt;TableName>in share mode</td>
+         <td>S</td>
+         <td>S、RS</td>
+       </tr>
+       <tr>
+         <td>lock table &lt;TableName>in share row exclusive mode</td>
+         <td>SRX</td>
+         <td>RS</td>
+       </tr>
+       <tr>
+         <td>lock table &lt;TableName>in exclusive mode</td>
+         <td>X</td>
+         <td>无</td>
+       </tr>
+     </tbody>
+   </table>
+   <div class="ext">
+     <p>通常的 DML 操作（select ... for update、insert、update、delete）在表级只获得意向锁（RS 或 RX），真正封锁粒度还是行级。</p>
+     <p>Oracle 的一个显著特点是单纯查询数据不加锁，它通过回滚段（Rollback segment）来保证用户不读“脏”数据。</p>
+     <p>这都提高了系统并发程度。</p>
+   </div>
+  
   <h1>附录</h1>
-  <h2>V$lock表及相关视图的说明</h2>
+  
+  <h2>v$lock</h2>
   <table>
     <thead>
       <tr>
-        <th>Column</th>
-        <th>Datatype</th>
-        <th>Description</th>
+        <th>字段名称</th>
+        <th>类型</th>
+        <th>说明</th>
       </tr>
     </thead>
     <tbody>
@@ -144,37 +351,36 @@ select… for update</pre>
       <tr>
         <td>SID</td>
         <td>NUMBER</td>
-        <td>Identifier for session holding or acquiring the lock</td>
+        <td>会话（SESSION）标识 Identifier for session holding or acquiring the lock</td>
       </tr>
       <tr>
         <td>TYPE</td>
         <td>VARCHAR2(2)</td>
-        <td>Type of user or system lockThe locks on the user types are obtained by user applications. Any process that is blocking others is likely to be holding one of these locks. The user type locks are:<br/>
+        <td>区分该锁保护对象的类型 Type of user or system lockThe locks on the user types are obtained by user applications. Any process that is blocking others is likely to be holding one of these locks. The user type locks are:<br/>
           <ul>
             <li>TM - DML enqueue</li>
             <li>TX - Transaction enqueue</li>
             <li>UL - User supplied</li>
           </ul>
           <span class="comment">
-          --我们主要关注TX和TM两种类型的锁<br />
+          --我们主要关注 TX 和 TM 两种类型的锁<br />
           --UL锁用户自己定义的，一般很少会定义，基本不用关注<br />
-          --其它均为系统锁，会很快自动释放，不用关注
+          --其他均为系统锁，会很快自动释放，不用关注
           </span>
         </td>
       </tr>
       <tr>
         <td>ID1</td>
         <td>NUMBER</td>
-        <td>Lock identifier #1 (depends on type)</td>
+        <td>锁标识 1 （主要关注的内容） Lock identifier #1 (depends on type)</td>
       </tr>
       <tr>
         <td>ID2</td>
         <td>NUMBER</td>
-        <td>Lock identifier #2 (depends on type) <br />
-          <span class="comment">--当lock type 为TM时，id1为DML-locked object的object_id<br/>
-          --当lock type 为TX时，id1为usn+slot，而id2为seq。<br/>
-          --当lock type为其它时，不用关注
-          </span>
+        <td>锁标识 2 Lock identifier #2 (depends on type) <br />
+          <span class="comment">--当 lock type 为 TM 时，id1 为 DML-locked object 的 object_id<br/>
+          --当 lock type 为 TX 时，id1 为 usn+slot，而 id2 为 seq。<br/>
+          --当 lock type 为其他时，不用关注 </span>
         </td>
       </tr>
       <tr>
@@ -184,44 +390,34 @@ select… for update</pre>
           <ul>
             <li>0 - none</li>
             <li>1 - null (NULL)</li>
-            <li>2 - row-S (SS)</li>
-            <li>3 - row-X (SX)</li>
+            <li>2 - row share (RS)</li>
+            <li>3 - row-exclusive (RX)</li>
             <li>4 - share (S)</li>
-            <li>5 - S/Row-X (SSX)</li>
+            <li>5 - share row exclusive (SRX)</li>
             <li>6 - exclusive (X)</li>
           </ul>
           <span class="comment">
-          --大于0时表示当前会话以某种模式占有该锁，等于0时表示当前会话正在等待该锁资源，即表示该会话被阻塞。<br/>
-          --往往在发生TX锁时，伴随着TM锁，比如一个sid=9会话拥有一个TM锁，一般会拥有一个或几个TX锁，但他们的id1和id2是不同的，请注意
+          --大于 0 时表示当前会话以某种模式占有该锁，等于 0 时表示当前会话正在等待该锁资源，即表示该会话被阻塞。<br/>
+          --往往在发生 TX 锁时，伴随着 TM 锁，比如一个 sid=9 会话拥有一个 TM 锁，一般会拥有一个或几个 TX 锁，但他们的 id1 和 id2 是不同的，请注意
           </span>
         </td>
       </tr>
       <tr>
         <td>REQUEST</td>
         <td>NUMBER</td>
-        <td>Lock mode in which the process requests the lock:
-          <ul>
-            <li>0 - none</li>
-            <li>1 - null (NULL)</li>
-            <li>2 - row-S (SS)</li>
-            <li>3 - row-X (SX)</li>
-            <li>4 - share (S)</li>
-            <li>5 - S/Row-X (SSX)</li>
-            <li>6 - exclusive (X)</li>
-          </ul>
-          <span class="comment">--大于0时，表示当前会话被阻塞，其它会话占有改锁的模式</span>
-        </td>
+        <td>申请的锁模式 Lock mode in which the process requests the lock</td>
       </tr>
       <tr>
         <td>CTIME</td>
         <td>NUMBER</td>
-        <td>Time since current mode was granted</td>
+        <td>已持有或等待锁的时间 Time since current mode was granted</td>
       </tr>
       <tr>
         <td>BLOCK</td>
         <td>NUMBER</td>
-        <td>The lock is blocking another lock0, 'Not Blocking',
+        <td>是否阻塞其他锁申请 The lock is blocking another lock:
           <ul>
+            <li>0, 'Not Blocking',</li>
             <li>1, 'Blocking',</li>
             <li>2, 'Global',</li>
           </ul>
@@ -231,7 +427,63 @@ select… for update</pre>
     </tbody>
   </table>
   
-  <h2>其它相关视图说明</h2>
+  <h2>v$locked_object</h2>
+  <table>
+    <tbody>
+      <tr>
+        <th>字段名称</th>
+        <th>类型</th>
+        <th>说明</th>
+      </tr>
+      <tr>
+        <td>XIDUSN</td>
+        <td>NUMBER</td>
+        <td>回滚段号</td>
+      </tr>
+      <tr>
+        <td>XIDSLOT</td>
+        <td>NUMBER</td>
+        <td>糟号</td>
+      </tr>
+      <tr>
+        <td>XIDSQN</td>
+        <td>NUMBER</td>
+        <td>序列号</td>
+      </tr>
+      <tr>
+        <td>OBJECT_ID</td>
+        <td>NUMBER</td>
+        <td>被锁对象标识</td>
+      </tr>
+      <tr>
+        <td>SESSION_ID</td>
+        <td>NUMBER</td>
+        <td>持有锁的会话（SESSION）标识</td>
+      </tr>
+      <tr>
+        <td>ORACLE_USERNAME</td>
+        <td>VARCHAR2(30)</td>
+        <td>持有该锁的用户的 Oracle 用户名</td>
+      </tr>
+      <tr>
+        <td>OS_USER_NAME</td>
+        <td>VARCHAR2(15)</td>
+        <td>持有该锁的用户的操作系统用户名</td>
+      </tr>
+      <tr>
+        <td>PROCESS</td>
+        <td>VARCHAR(9)</td>
+        <td>操作系统进程号</td>
+      </tr>
+      <tr>
+        <td>LOCKED_MODE</td>
+        <td>NUMBER</td>
+        <td>锁模式</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <h2>其他相关视图说明</h2>
   <table>
     <thead>
       <tr>
