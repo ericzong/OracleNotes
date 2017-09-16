@@ -185,6 +185,10 @@ dt {
 	padding-right: 5px;
 }
 
+dt, dd {
+	padding-bottom: 5px;
+}
+
 /* 3. 编号 */
 /* 有序列表第一级列表项索引为大写罗马数字 */
 div.list>ol>li {
