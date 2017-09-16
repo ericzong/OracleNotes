@@ -66,6 +66,8 @@ div.textarea {
 	border: 1px solid;
 	width: 90%;
 	padding-right: 5px;
+	padding-top: 2px;
+	padding-bottom: 2px;
 }
 div.textarea * {
 	margin: 0;
@@ -95,7 +97,7 @@ div.ext {
 	border: 1px dotted;
 	background-color: #eeeeee;
 	width: 90%;
-	padding-right: 5px;
+	padding: 2px;
 }
 div.ext * {
 	margin: 0;
