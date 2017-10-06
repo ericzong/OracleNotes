@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="author" content="Eric Zong">
-<title>锁（Lock）</title>
+<title>Oracle 锁（Lock）</title>
 <link type="text/css" rel="stylesheet" href="../css/common.css"  />
 <link type="text/css" rel="stylesheet" href="../css/print.css" media="print" />
 <link type="text/css" rel="stylesheet" href="../css/title.css"  />
@@ -21,7 +21,7 @@
   <h2>关于锁</h2>
   <p>事务（Transactions），是关系数据库最小的恢复和交易单位，具有 ACID 特征<sup>*</sup>。为确保并发用户在存取同一数据库对象时的正确性<sup>*</sup>，数据库中引入并发（锁）机制。</p>
   <div class="ext">
-    <p>事务 ACID 特征：原子性、一致性、隔离性、永久性。</p>
+    <p>事务 ACID 特征：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）、永久性（Durability）。</p>
     <p>数据库对象存取正确性：无丢失更新、可重复读、不读“脏”数据、无“幻像”读。</p>
   </div>
   
@@ -57,7 +57,7 @@
   <p>根据保护对象的不同，Oracle 数据库锁可分为以下几大类：</p>
   <ul>
     <li>DML lock（data locks，数据锁）：用于保护数据的完整性；</li>
-    <li> DDL lock（dictionary locks，字典锁）：用于保护数据库对象的结构（例如表、视图、索引的结构定义）;</li>
+    <li> DDL lock（dictionary locks，字典锁）：用于保护数据库对象的结构（例如表、视图、索引的结构定义）；</li>
     <li>Internal locks &amp; latches（内部锁与闩）：保护内部数据库结构；</li>
     <li>Distributed locks（分布式锁）：用于 OPS （并行服务器）中；</li>
     <li>PCM locks（并行高速缓存管理锁）：用于 OPS （并行服务器）中。</li>
@@ -356,17 +356,12 @@
       <tr>
         <td>TYPE</td>
         <td>VARCHAR2(2)</td>
-        <td>区分该锁保护对象的类型 Type of user or system lockThe locks on the user types are obtained by user applications. Any process that is blocking others is likely to be holding one of these locks. The user type locks are:<br/>
+        <td>区分该锁保护对象的类型 Type of user or system lock. The locks on the user types are obtained by user applications. Any process that is blocking others is likely to be holding one of these locks. The user type locks are:<br/>
           <ul>
             <li>TM - DML enqueue</li>
             <li>TX - Transaction enqueue</li>
             <li>UL - User supplied</li>
           </ul>
-          <span class="comment">
-          --我们主要关注 TX 和 TM 两种类型的锁<br />
-          --UL锁用户自己定义的，一般很少会定义，基本不用关注<br />
-          --其他均为系统锁，会很快自动释放，不用关注
-          </span>
         </td>
       </tr>
       <tr>
@@ -378,9 +373,7 @@
         <td>ID2</td>
         <td>NUMBER</td>
         <td>锁标识 2 Lock identifier #2 (depends on type) <br />
-          <span class="comment">--当 lock type 为 TM 时，id1 为 DML-locked object 的 object_id<br/>
-          --当 lock type 为 TX 时，id1 为 usn+slot，而 id2 为 seq。<br/>
-          --当 lock type 为其他时，不用关注 </span>
+          <span class="comment">当 lock type 为 TM 时，ID1 为 DML-locked object 的 OBJECT_ID；当 lock type 为 TX 时，ID1 为 USN+SLOT，而 ID2 为 SEQ；当 lock type 为其他时，不用关注。</span>
         </td>
       </tr>
       <tr>
@@ -397,8 +390,7 @@
             <li>6 - exclusive (X)</li>
           </ul>
           <span class="comment">
-          --大于 0 时表示当前会话以某种模式占有该锁，等于 0 时表示当前会话正在等待该锁资源，即表示该会话被阻塞。<br/>
-          --往往在发生 TX 锁时，伴随着 TM 锁，比如一个 sid=9 会话拥有一个 TM 锁，一般会拥有一个或几个 TX 锁，但他们的 id1 和 id2 是不同的，请注意
+          往往在发生 TX 锁时，伴随着 TM 锁，比如一个 SID=9 会话拥有一个 TM 锁，一般会拥有一个或几个 TX 锁，但它们的 ID1 和 ID2 是不同的。
           </span>
         </td>
       </tr>
@@ -421,7 +413,7 @@
             <li>1, 'Blocking',</li>
             <li>2, 'Global',</li>
           </ul>
-          <span class="comment">--该锁是否阻塞了另外一个锁</span>
+          <span class="comment">该锁是否阻塞了另外一个锁</span>
         </td>
       </tr>
     </tbody>
@@ -494,49 +486,49 @@
     </thead>
     <tbody>
       <tr>
-        <td>v$session</td>
+        <td>V$SESSION</td>
         <td>查询会话的信息和锁的信息。</td>
         <td>
           <ul>
-            <li>sid,serial#：表示会话信息。</li>
-            <li>program：表示会话的应用程序信息。</li>
-            <li>row_wait_obj#：表示等待的对象,和dba_objects中的object_id相对应。</li>
-            <li>lockwait :该会话等待的锁的地址,与v$lock的kaddr对应。</li>
+            <li>SID, SERIAL#：表示会话信息。</li>
+            <li>PROGRAM：表示会话的应用程序信息。</li>
+            <li>ROW_WAIT_OBJ#：表示等待的对象，和 DBA_OBJECTS 中的 OBJECT_ID 相对应。</li>
+            <li>LOCKWAIT：该会话等待的锁的地址，与 V$LOCK 的 KADDR 对应。</li>
           </ul>
         </td>
       </tr>
       <tr>
-        <td>v$session_wait</td>
+        <td>V$SESSION_WAIT</td>
         <td>查询等待的会话信息。</td>
         <td>
           <ul>
-            <li>sid：表示持有锁的会话信息。</li>
-            <li>Seconds_in_wait：表示等待持续的时间信息。</li>
-            <li>Event：表示会话等待的事件，锁等于enqueue。</li>
+            <li>SID：表示持有锁的会话信息。</li>
+            <li>SECONDS_IN_WAIT：表示等待持续的时间信息。</li>
+            <li>EVENT：表示会话等待的事件，锁等于 ENQUEUE。</li>
           </ul>
         </td>
       </tr>
       <tr>
-        <td>dba_locks</td>
-        <td>对v$lock的格式化视图。</td>
+        <td>DBA_LOCKS</td>
+        <td>对 V$LOCK 的格式化视图。</td>
         <td>
           <ul>
-            <li>Session_id：和v$lock中的Sid对应。</li>
-            <li>Lock_type：和v$lock中的type对应。</li>
-            <li>Lock_ID1： 和v$lock中的ID1对应。</li>
-            <li>Mode_held,mode_requested：和v$lock中的lmode,request相对应。</li>
+            <li>SESSION_ID：和 V$LOCK 中的 SID 对应。</li>
+            <li>LOCK_TYPE：和 V$LOCK 中的 TYPE 对应。</li>
+            <li>LOCK_ID1： 和 V$LOCK 中的 ID1 对应。</li>
+            <li>MODE_HELD, MODE_REQUESTED：和 V$LOCK 中的 LMODE, REQUEST 相对应。</li>
           </ul>
         </td>
       </tr>
       <tr>
-        <td>v$locked_object</td>
+        <td>V$LOCKED_OBJECT</td>
         <td>只包含DML的锁信息，包括回滚段和会话信息。</td>
         <td>
           <ul>
-            <li>Xidusn,xidslot,xidsqn：表示回滚段信息。和v$transaction相关联。</li>
-            <li>Object_id：表示被锁对象标识。</li>
-            <li>Session_id：表示持有锁的会话信息。</li>
-            <li>Locked_mode：表示会话等待的锁模式的信息，和v$lock中的lmode一致。</li>
+            <li>XIDUSN, XIDSLOT, XIDSQN：表示回滚段信息。和 V$TRANSACTION 相关联。</li>
+            <li>OBJECT_ID：表示被锁对象标识。</li>
+            <li>SESSION_ID：表示持有锁的会话信息。</li>
+            <li>LOCKED_MODE：表示会话等待的锁模式的信息，和 V$LOCK 中的 LMODE 一致。</li>
           </ul>
         </td>
       </tr>
@@ -570,9 +562,9 @@ select * from v$session_wait where event='enqueue';</code></pre>
 
   <h2>强制解除锁定</h2>
   <pre class="code"><code>
---首先得到被锁对象的session_id
+--首先得到被锁对象的 SESSION_ID
 select session_id from v$locked_object; 
---通过上面得到的session_id去取得v$session的sid和serial#，然后对该进程进行终止
+--通过上面得到的 SESSION_ID 去取得 V$SESSION 的 SID 和 SERIAL#，然后对该进程进行终止
 select sid, serial#, username, osuser from v$session where sid = session_id; 
 alter system kill session 'sid,serial';</code></pre>
 

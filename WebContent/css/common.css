@@ -46,10 +46,11 @@ p {
 li p {
 	text-indent: 0;
 }
-body>* {
-	margin-left: 2em;
+body {
+	padding-left: 2em;
 }
 body>h1, h2, h3, p {
+	padding-left: 0;
 	margin-left: 0;
 }
 
@@ -153,6 +154,7 @@ table {
 	margin-left: 2em;
 	margin-top: 1em;
 	margin-bottom: 1em;
+	min-width: 80%;
 }
 caption {
 	font-weight: bold;
@@ -186,7 +188,8 @@ dt {
 }
 
 dt, dd {
-	padding-bottom: 5px;
+	padding-top: 0;
+	padding-bottom: 0;
 }
 
 /* 3. 编号 */
