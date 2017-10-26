@@ -53,6 +53,9 @@ body>h1, h2, h3, p {
 	padding-left: 0;
 	margin-left: 0;
 }
+dt {
+	text-indent: 2em;
+}
 
 /* 紧临下行 */
 .next {
